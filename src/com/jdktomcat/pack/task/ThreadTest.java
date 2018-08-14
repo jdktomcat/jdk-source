@@ -6,6 +6,7 @@ package com.jdktomcat.pack.task;
  * @author 汤旗
  * @date 2018-08-14
  */
+
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.joda.time.DateTime;
 
@@ -53,8 +54,10 @@ public class ThreadTest {
      */
     private static void withPool() throws InterruptedException {
 
-//        final ThreadPoolExecutor pool = newPool();
-         final ThreadPoolExecutor pool = oldPool();
+        final ThreadPoolExecutor pool = newPool();
+//        final ThreadPoolExecutor pool = oldPool();
+//        final ThreadPoolExecutor pool = minePool();
+
 
         int i = 1;
 
@@ -72,36 +75,25 @@ public class ThreadTest {
         // 每秒的任务数 TPS = 500
         final int tasks = 500;
 
+        final long start = System.currentTimeMillis();
+
         do {
-
-            final int count = i;
-
             // 进入异步方法时间
-            final Date now = DateTime.now().toDate();
-            final long start = System.currentTimeMillis();
             pool.execute(new Runnable() {
-
                 @Override
                 public void run() {
-
-                    Date date = DateTime.now().toDate();
                     try {
-//                        // 模拟业务执行
-                        Thread.sleep(random.nextInt(responseTime) + taskCost);
+                        Thread.sleep(taskCost);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    System.out.println("count: " + count + ", 进入时间: " + simpleDateFormat.format(date) +
-                            ", 执行时间: " + simpleDateFormat.format(DateTime.now().toDate()) + " " + getTreadPoolInfo(pool)
-                            + ", cost =" + (System.currentTimeMillis() - start));
                 }
             });
-
-            Thread.sleep(1000 / tasks);
-
             i++;
         } while (i <= executeCount);
+        final long endTime = System.currentTimeMillis();
+        pool.shutdown();
+        System.out.println("Cost:" + (endTime - start));
     }
 
     /**
@@ -111,13 +103,13 @@ public class ThreadTest {
         /*
          * 核心线程数
          */
-        int corePoolSize = Runtime.getRuntime().availableProcessors();
+        int corePoolSize = Runtime.getRuntime().availableProcessors() * 100;
         /*
          * 最大线程数
          * 活动线程数量 >= 核心线程数 && 排队线程数量满 === 线程池创建新线程处理任务
          * 活动线程数量 = 最大线程数 && 排队线程数量满 === 线程池拒绝处理任务
          */
-        int maxPoolSize = Integer.MAX_VALUE;
+        int maxPoolSize = 1000;
         /*
          * 线程空闲时间
          */
@@ -126,18 +118,43 @@ public class ThreadTest {
         /*
          * 当核心线程数达到最大时 新添加任务将在队列中排队等待
          */
-        int capacity = 1000000;
+        int capacity = 4;
 
         return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, timeUnit,
                 new ArrayBlockingQueue<Runnable>(capacity), new ThreadFactoryBuilder()
                 .setNameFormat("thread-pool-2-").build(),
-                new RejectedExecutionHandler() {
+                new ThreadPoolExecutor.CallerRunsPolicy());
+    }
 
-                    @Override
-                    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                        System.out.println(String.format("======================================================== 异步线程池队列已经塞满 %s", getTreadPoolInfo(executor)));
-                    }
-                });
+    /**
+     * 修改前线程池配置
+     */
+    public static ThreadPoolExecutor minePool() {
+        /*
+         * 核心线程数
+         */
+        int corePoolSize = Runtime.getRuntime().availableProcessors() * 100;
+        /*
+         * 最大线程数
+         * 活动线程数量 >= 核心线程数 && 排队线程数量满 === 线程池创建新线程处理任务
+         * 活动线程数量 = 最大线程数 && 排队线程数量满 === 线程池拒绝处理任务
+         */
+        int maxPoolSize = 2500;
+        /*
+         * 线程空闲时间
+         */
+        long keepAliveTime = 10L;
+
+        TimeUnit timeUnit = TimeUnit.SECONDS;
+        /*
+         * 当核心线程数达到最大时 新添加任务将在队列中排队等待
+         */
+        int capacity = 2;
+
+        return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, timeUnit,
+                new ArrayBlockingQueue<Runnable>(capacity), new ThreadFactoryBuilder()
+                .setNameFormat("thread-pool-3-").build(),
+                new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     /**
@@ -168,7 +185,6 @@ public class ThreadTest {
                 new ArrayBlockingQueue<Runnable>(capacity), new ThreadFactoryBuilder()
                 .setNameFormat("thread-pool-1-").build(),
                 new RejectedExecutionHandler() {
-
                     @Override
                     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
                         System.out.println(String.format("========================================================异步线程池队列已经塞满 %s", getTreadPoolInfo(executor)));
@@ -182,7 +198,7 @@ public class ThreadTest {
      * @return 线程池详情
      */
     private static String getTreadPoolInfo(ThreadPoolExecutor executor) {
-        return String.format("当前排队线程数: %s, 当前活动线程数: %s, 执行完成线程数: %s, 总线程数: %s",
+        return String.format("当前排队任务数: %s, 当前活动线程数: %s, 执行完成任务数: %s, 总任务数: %s",
                 executor.getQueue().size(), executor.getActiveCount(), executor.getCompletedTaskCount(), executor.getTaskCount());
     }
 }
