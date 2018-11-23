@@ -93,9 +93,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * 　　１.默认：java.util.concurrent.ThreadPoolExecutor.AbortPolicy，这种策略在调用execute
  * 　　　 方法时会抛出一个运行时异常RejectedExecutionException。
  * 　　２.java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy,调用线程自己去运行任务。
- * 　　 这种策略提供了一种简单反馈控制机制：降低新任务提交速度。
- * ３.java.util.concurrent.ThreadPoolExecutor.DiscardPolicy，任务不会被执行，简单丢弃。
- * 　４.java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy，如果线程池没有被关
+ * 　　   这种策略提供了一种简单反馈控制机制：降低新任务提交速度。
+ *    ３.java.util.concurrent.ThreadPoolExecutor.DiscardPolicy，任务不会被执行，简单丢弃。
+ *    ４.java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy，如果线程池没有被关
  * 　　　闭，在队列头部的任务将被丢弃，然后在重试提交，直到成功。
  * 可以自己去自定义RejectedExecutionHandler，如果这么做的话需要特别注意策略设计只能适用于特定的容量
  * 或者队列策略。

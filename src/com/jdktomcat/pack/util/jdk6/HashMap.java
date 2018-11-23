@@ -703,6 +703,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
             return oldValue;
         }
 
+        public Entry<K, V> getNext() {
+            return next;
+        }
+
+        public void setNext(Entry<K, V> next) {
+            this.next = next;
+        }
+
         /**
          * 判等
          *
@@ -1139,5 +1147,26 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
 
     float loadFactor() {
         return loadFactor;
+    }
+
+
+    private static void print(HashMap<String, String> dataMap) {
+        if (dataMap != null) {
+            for (int i = 0; i < dataMap.table.length; i++) {
+                System.out.print("bucketIndex" + i + ": ");
+                for (HashMap.Entry<String, String> entry = dataMap.table[i]; entry != null; entry = entry.next) {
+                    System.out.print(entry + " ");
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        HashMap<String, String> dataMap = new HashMap<>(20, 3.0f);
+        for (int i = 0; i < 50; i++) {
+            dataMap.put("key" + i, "value" + i);
+        }
+        print(dataMap);
     }
 }

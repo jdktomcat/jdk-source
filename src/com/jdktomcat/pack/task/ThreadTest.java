@@ -54,9 +54,9 @@ public class ThreadTest {
      */
     private static void withPool() throws InterruptedException {
 
-        final ThreadPoolExecutor pool = newPool();
+//        final ThreadPoolExecutor pool = newPool();
 //        final ThreadPoolExecutor pool = oldPool();
-//        final ThreadPoolExecutor pool = minePool();
+        final ThreadPoolExecutor pool = minePool();
 
 
         int i = 1;
@@ -83,7 +83,7 @@ public class ThreadTest {
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(taskCost);
+                        Thread.sleep(taskCost * 100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
