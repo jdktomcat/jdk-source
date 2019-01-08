@@ -1,6 +1,9 @@
 package com.jdktomcat.pack;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Administrator
@@ -43,8 +46,8 @@ public class Main {
 
 
     public static void main(String[] args) {
-        String openId = "197d8d265a18b2b4";
-        System.out.println(Math.abs(openId.hashCode()) % 5);
+//        String openId = "197d8d265a18b2b4";
+//        System.out.println(Math.abs(openId.hashCode()) % 5);
 
 //        Integer a = 1;
 //        Integer b = 2;
@@ -52,6 +55,17 @@ public class Main {
 //        System.out.println("交换前：a=" + a + ", b=" + b);
 //        swap(a, b);
 //        System.out.println("交换后：a=" + a + ", b=" + b);
+//        System.out.println(100000L*24*3600*1000);
+
+//        String str = "金V奖";
+//        System.out.println(str.length());
+
+        Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            System.out.println(random.nextInt(5));
+        }
+
+
     }
 }
 
