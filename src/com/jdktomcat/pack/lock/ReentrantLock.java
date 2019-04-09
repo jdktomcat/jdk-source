@@ -9,9 +9,10 @@ package com.jdktomcat.pack.lock;
  * Expert Group and released to the public domain, as explained at
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
+import com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer;
+
 import java.util.concurrent.TimeUnit;
 import java.util.Collection;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
@@ -194,7 +195,9 @@ public class ReentrantLock implements Lock, java.io.Serializable {
          */
         @Override
         final void lock() {
+            // CAS原子性操作
             if (compareAndSetState(0, 1)) {
+                // 设置独占所有线程线程
                 setExclusiveOwnerThread(Thread.currentThread());
             } else {
                 acquire(1);
