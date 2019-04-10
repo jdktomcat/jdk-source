@@ -29,7 +29,9 @@ import java.util.concurrent.locks.ReadWriteLock;
  *
  * 该类为那些依赖先进先出等待队列阻塞锁和相关的同步工具(信号量\事件等)提供了一个框架.
  * 该类被设计为一个有用的基类对那些绝大多数依赖于原子数值来表现状态的同步工具类.子类
- * 必须定义那些protected方法修改状态值(定义)
+ * 必须定义那些protected方法修改状态值(表示与该锁相关联的资源会被获取或者释放).鉴于
+ * 这些,这个类里的其他方法完成所有的队列与阻塞机制.子类可以维护这些状态属性,但是只有
+ * 自动更新数值使用方法getState\setState\compareAndSetState来追踪序列化.
  *
  * <p>Subclasses should be defined as non-public internal helper
  * classes that are used to implement the synchronization properties
