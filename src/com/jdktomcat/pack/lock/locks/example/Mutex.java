@@ -16,6 +16,10 @@ import java.util.concurrent.locks.Lock;
  * @date 2019-04-11 14:35
  */
 public class Mutex implements Lock, java.io.Serializable {
+    /**
+     * 序列化版本号
+     */
+    private static final long serialVersionUID = -4569237900975588176L;
 
     // Our internal helper class
     private static class Sync extends AbstractQueuedSynchronizer {
@@ -26,7 +30,8 @@ public class Mutex implements Lock, java.io.Serializable {
 
         // Acquires the lock if state is zero
         public boolean tryAcquire(int acquires) {
-            assert acquires == 1; // Otherwise unused
+            // Otherwise unused
+            assert acquires == 1;
             if (compareAndSetState(0, 1)) {
                 setExclusiveOwnerThread(Thread.currentThread());
                 return true;
@@ -36,8 +41,11 @@ public class Mutex implements Lock, java.io.Serializable {
 
         // Releases the lock by setting state to zero
         protected boolean tryRelease(int releases) {
-            assert releases == 1; // Otherwise unused
-            if (getState() == 0) throw new IllegalMonitorStateException();
+            // Otherwise unused
+            assert releases == 1;
+            if (getState() == 0) {
+                throw new IllegalMonitorStateException();
+            }
             setExclusiveOwnerThread(null);
             setState(0);
             return true;
@@ -87,8 +95,7 @@ public class Mutex implements Lock, java.io.Serializable {
         sync.acquireInterruptibly(1);
     }
 
-    public boolean tryLock(long timeout, TimeUnit unit)
-            throws InterruptedException {
+    public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
         return sync.tryAcquireNanos(1, unit.toNanos(timeout));
     }
 }
