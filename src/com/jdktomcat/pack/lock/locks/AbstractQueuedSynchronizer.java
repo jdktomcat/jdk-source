@@ -55,7 +55,7 @@ import java.util.concurrent.locks.ReadWriteLock;
  * {@link ReadWriteLock}. Subclasses that support only exclusive or
  * only shared modes need not define the methods supporting the unused mode.
  *
- * <p>This class defines a nested {@link com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject} class that
+ * <p>This class defines a nested {@link ConditionObject} class that
  * can be used as a {@link Condition} implementation by subclasses
  * supporting exclusive mode for which method {@link
  * #isHeldExclusively} reports whether synchronization is exclusively
@@ -65,7 +65,7 @@ import java.util.concurrent.locks.ReadWriteLock;
  * eventually restores this object to its previous acquired state.  No
  * {@code AbstractQueuedSynchronizer} method otherwise creates such a
  * condition, so if this constraint cannot be met, do not use it.  The
- * behavior of {@link com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject} depends of course on the
+ * behavior of {@link ConditionObject} depends of course on the
  * semantics of its synchronizer implementation.
  *
  * <p>This class provides inspection, instrumentation, and monitoring
@@ -362,11 +362,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
         /**
          * Marker to indicate a node is waiting in shared mode
          */
-        static final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node SHARED = new com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node();
+        static final Node SHARED = new Node();
         /**
          * Marker to indicate a node is waiting in exclusive mode
          */
-        static final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node EXCLUSIVE = null;
+        static final Node EXCLUSIVE = null;
 
         /**
          * waitStatus value to indicate thread has cancelled
@@ -433,7 +433,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * cancelled thread never succeeds in acquiring, and a thread only
          * cancels itself, not any other node.
          */
-        volatile com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node prev;
+        volatile Node prev;
 
         /**
          * Link to the successor node that the current node/thread
@@ -448,7 +448,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * point to the node itself instead of null, to make life
          * easier for isOnSyncQueue.
          */
-        volatile com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node next;
+        volatile Node next;
 
         /**
          * The thread that enqueued this node.  Initialized on
@@ -466,7 +466,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * we save a field by using special value to indicate shared
          * mode.
          */
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node nextWaiter;
+        Node nextWaiter;
 
         /**
          * Returns true if node is waiting in shared mode.
@@ -482,23 +482,27 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          *
          * @return the predecessor of this node
          */
-        final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node predecessor() throws NullPointerException {
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = prev;
-            if (p == null)
+        final Node predecessor() throws NullPointerException {
+            Node p = prev;
+            if (p == null) {
                 throw new NullPointerException();
-            else
+            } else {
                 return p;
+            }
         }
 
-        Node() {    // Used to establish initial head or SHARED marker
+        // Used to establish initial head or SHARED marker
+        Node() {
         }
 
-        Node(Thread thread, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node mode) {     // Used by addWaiter
+        // Used by addWaiter
+        Node(Thread thread, Node mode) {
             this.nextWaiter = mode;
             this.thread = thread;
         }
 
-        Node(Thread thread, int waitStatus) { // Used by Condition
+        // Used by Condition
+        Node(Thread thread, int waitStatus) {
             this.waitStatus = waitStatus;
             this.thread = thread;
         }
@@ -510,13 +514,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * If head exists, its waitStatus is guaranteed not to be
      * CANCELLED.
      */
-    private transient volatile com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node head;
+    private transient volatile Node head;
 
     /**
      * Tail of the wait queue, lazily initialized.  Modified only via
      * method enq to add new wait node.
      */
-    private transient volatile com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node tail;
+    private transient volatile Node tail;
 
     /**
      * The synchronization state.
@@ -574,12 +578,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param node the node to insert
      * @return node's predecessor
      */
-    private com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node enq(final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
+    private Node enq(final Node node) {
         for (; ; ) {
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node t = tail;
-            if (t == null) { // Must initialize
-                if (compareAndSetHead(new com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node()))
+            Node t = tail;
+            // Must initialize
+            if (t == null) {
+                if (compareAndSetHead(new Node())) {
                     tail = head;
+                }
             } else {
                 node.prev = t;
                 if (compareAndSetTail(t, node)) {
@@ -596,10 +602,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param mode Node.EXCLUSIVE for exclusive, Node.SHARED for shared
      * @return the new node
      */
-    private com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node addWaiter(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node mode) {
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = new com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node(Thread.currentThread(), mode);
+    private Node addWaiter(Node mode) {
+        Node node = new Node(Thread.currentThread(), mode);
         // Try the fast path of enq; backup to full enq on failure
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node pred = tail;
+        Node pred = tail;
         if (pred != null) {
             node.prev = pred;
             if (compareAndSetTail(pred, node)) {
@@ -618,7 +624,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *
      * @param node the node
      */
-    private void setHead(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
+    private void setHead(Node node) {
         head = node;
         node.thread = null;
         node.prev = null;
@@ -629,15 +635,16 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *
      * @param node the node
      */
-    private void unparkSuccessor(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
+    private void unparkSuccessor(Node node) {
         /*
          * If status is negative (i.e., possibly needing signal) try
          * to clear in anticipation of signalling.  It is OK if this
          * fails or if status is changed by waiting thread.
          */
         int ws = node.waitStatus;
-        if (ws < 0)
+        if (ws < 0) {
             compareAndSetWaitStatus(node, ws, 0);
+        }
 
         /*
          * Thread to unpark is held in successor, which is normally
@@ -645,15 +652,18 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * traverse backwards from tail to find the actual
          * non-cancelled successor.
          */
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node s = node.next;
+        Node s = node.next;
         if (s == null || s.waitStatus > 0) {
             s = null;
-            for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node t = tail; t != null && t != node; t = t.prev)
-                if (t.waitStatus <= 0)
+            for (Node t = tail; t != null && t != node; t = t.prev) {
+                if (t.waitStatus <= 0) {
                     s = t;
+                }
+            }
         }
-        if (s != null)
+        if (s != null) {
             LockSupport.unpark(s.thread);
+        }
     }
 
     /**
@@ -674,19 +684,24 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * fails, if so rechecking.
          */
         for (; ; ) {
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node h = head;
+            Node h = head;
             if (h != null && h != tail) {
                 int ws = h.waitStatus;
-                if (ws == com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SIGNAL) {
-                    if (!compareAndSetWaitStatus(h, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SIGNAL, 0))
-                        continue;            // loop to recheck cases
+                if (ws == Node.SIGNAL) {
+                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0)) {
+                        // loop to recheck cases
+                        continue;
+                    }
                     unparkSuccessor(h);
-                } else if (ws == 0 &&
-                        !compareAndSetWaitStatus(h, 0, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.PROPAGATE))
-                    continue;                // loop on failed CAS
+                } else if (ws == 0 && !compareAndSetWaitStatus(h, 0, Node.PROPAGATE)) {
+                    // loop on failed CAS
+                    continue;
+                }
             }
-            if (h == head)                   // loop if head changed
+            // loop if head changed
+            if (h == head) {
                 break;
+            }
         }
     }
 
@@ -698,8 +713,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param node      the node
      * @param propagate the return value from a tryAcquireShared
      */
-    private void setHeadAndPropagate(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node, int propagate) {
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node h = head; // Record old head for check below
+    private void setHeadAndPropagate(Node node, int propagate) {
+        Node h = head; // Record old head for check below
         setHead(node);
         /*
          * Try to signal next queued node if:
@@ -717,11 +732,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * racing acquires/releases, so most need signals now or soon
          * anyway.
          */
-        if (propagate > 0 || h == null || h.waitStatus < 0 ||
-                (h = head) == null || h.waitStatus < 0) {
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node s = node.next;
-            if (s == null || s.isShared())
+        if (propagate > 0 || h == null || h.waitStatus < 0 || (h = head) == null || h.waitStatus < 0) {
+            Node s = node.next;
+            if (s == null || s.isShared()) {
                 doReleaseShared();
+            }
         }
     }
 
@@ -732,27 +747,27 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *
      * @param node the node
      */
-    private void cancelAcquire(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
+    private void cancelAcquire(Node node) {
         // Ignore if node doesn't exist
-        if (node == null)
+        if (node == null) {
             return;
-
+        }
         node.thread = null;
-
         // Skip cancelled predecessors
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node pred = node.prev;
-        while (pred.waitStatus > 0)
+        Node pred = node.prev;
+        while (pred.waitStatus > 0) {
             node.prev = pred = pred.prev;
+        }
 
         // predNext is the apparent node to unsplice. CASes below will
         // fail if not, in which case, we lost race vs another cancel
         // or signal, so no further action is necessary.
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node predNext = pred.next;
+        Node predNext = pred.next;
 
         // Can use unconditional write instead of CAS here.
         // After this atomic step, other Nodes can skip past us.
         // Before, we are free of interference from other threads.
-        node.waitStatus = com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CANCELLED;
+        node.waitStatus = Node.CANCELLED;
 
         // If we are the tail, remove ourselves.
         if (node == tail && compareAndSetTail(node, pred)) {
@@ -761,18 +776,16 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
             // If successor needs signal, try to set pred's next-link
             // so it will get one. Otherwise wake it up to propagate.
             int ws;
-            if (pred != head &&
-                    ((ws = pred.waitStatus) == com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SIGNAL ||
-                            (ws <= 0 && compareAndSetWaitStatus(pred, ws, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SIGNAL))) &&
-                    pred.thread != null) {
-                com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node next = node.next;
-                if (next != null && next.waitStatus <= 0)
+            if (pred != head && ((ws = pred.waitStatus) == Node.SIGNAL || (ws <= 0 && compareAndSetWaitStatus(pred, ws, Node.SIGNAL))) && pred.thread != null) {
+                Node next = node.next;
+                if (next != null && next.waitStatus <= 0) {
                     compareAndSetNext(pred, predNext, next);
+                }
             } else {
                 unparkSuccessor(node);
             }
-
-            node.next = node; // help GC
+            // help GC
+            node.next = node;
         }
     }
 
@@ -785,14 +798,15 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param node the node
      * @return {@code true} if thread should block
      */
-    private static boolean shouldParkAfterFailedAcquire(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node pred, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
+    private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
         int ws = pred.waitStatus;
-        if (ws == com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SIGNAL)
+        if (ws == Node.SIGNAL) {
             /*
              * This node has already set status asking a release
              * to signal it, so it can safely park.
              */
             return true;
+        }
         if (ws > 0) {
             /*
              * Predecessor was cancelled. Skip over predecessors and
@@ -808,7 +822,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
              * need a signal, but don't park yet.  Caller will need to
              * retry to make sure it cannot acquire before parking.
              */
-            compareAndSetWaitStatus(pred, ws, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SIGNAL);
+            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
         }
         return false;
     }
@@ -847,25 +861,27 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param arg  the acquire argument
      * @return {@code true} if interrupted while waiting
      */
-    final boolean acquireQueued(final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node, int arg) {
+    final boolean acquireQueued(final Node node, int arg) {
         boolean failed = true;
         try {
             boolean interrupted = false;
             for (; ; ) {
-                final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = node.predecessor();
+                final Node p = node.predecessor();
                 if (p == head && tryAcquire(arg)) {
                     setHead(node);
-                    p.next = null; // help GC
+                    // help GC
+                    p.next = null;
                     failed = false;
                     return interrupted;
                 }
-                if (shouldParkAfterFailedAcquire(p, node) &&
-                        parkAndCheckInterrupt())
+                if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
                     interrupted = true;
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -874,26 +890,27 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *
      * @param arg the acquire argument
      */
-    private void doAcquireInterruptibly(int arg)
-            throws InterruptedException {
-        final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addWaiter(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.EXCLUSIVE);
+    private void doAcquireInterruptibly(int arg) throws InterruptedException {
+        final Node node = addWaiter(Node.EXCLUSIVE);
         boolean failed = true;
         try {
             for (; ; ) {
-                final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = node.predecessor();
+                final Node p = node.predecessor();
                 if (p == head && tryAcquire(arg)) {
                     setHead(node);
-                    p.next = null; // help GC
+                    // help GC
+                    p.next = null;
                     failed = false;
                     return;
                 }
-                if (shouldParkAfterFailedAcquire(p, node) &&
-                        parkAndCheckInterrupt())
+                if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
                     throw new InterruptedException();
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -904,34 +921,38 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param nanosTimeout max wait time
      * @return {@code true} if acquired
      */
-    private boolean doAcquireNanos(int arg, long nanosTimeout)
-            throws InterruptedException {
-        if (nanosTimeout <= 0L)
+    private boolean doAcquireNanos(int arg, long nanosTimeout) throws InterruptedException {
+        if (nanosTimeout <= 0L) {
             return false;
+        }
         final long deadline = System.nanoTime() + nanosTimeout;
-        final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addWaiter(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.EXCLUSIVE);
+        final Node node = addWaiter(Node.EXCLUSIVE);
         boolean failed = true;
         try {
             for (; ; ) {
-                final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = node.predecessor();
+                final Node p = node.predecessor();
                 if (p == head && tryAcquire(arg)) {
                     setHead(node);
-                    p.next = null; // help GC
+                    // help GC
+                    p.next = null;
                     failed = false;
                     return true;
                 }
                 nanosTimeout = deadline - System.nanoTime();
-                if (nanosTimeout <= 0L)
+                if (nanosTimeout <= 0L) {
                     return false;
-                if (shouldParkAfterFailedAcquire(p, node) &&
-                        nanosTimeout > spinForTimeoutThreshold)
+                }
+                if (shouldParkAfterFailedAcquire(p, node) && nanosTimeout > spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if (Thread.interrupted())
+                }
+                if (Thread.interrupted()) {
                     throw new InterruptedException();
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -941,30 +962,33 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param arg the acquire argument
      */
     private void doAcquireShared(int arg) {
-        final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addWaiter(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SHARED);
+        final Node node = addWaiter(Node.SHARED);
         boolean failed = true;
         try {
             boolean interrupted = false;
             for (; ; ) {
-                final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = node.predecessor();
+                final Node p = node.predecessor();
                 if (p == head) {
                     int r = tryAcquireShared(arg);
                     if (r >= 0) {
                         setHeadAndPropagate(node, r);
-                        p.next = null; // help GC
-                        if (interrupted)
+                        // help GC
+                        p.next = null;
+                        if (interrupted) {
                             selfInterrupt();
+                        }
                         failed = false;
                         return;
                     }
                 }
-                if (shouldParkAfterFailedAcquire(p, node) &&
-                        parkAndCheckInterrupt())
+                if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
                     interrupted = true;
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -973,29 +997,30 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *
      * @param arg the acquire argument
      */
-    private void doAcquireSharedInterruptibly(int arg)
-            throws InterruptedException {
-        final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addWaiter(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SHARED);
+    private void doAcquireSharedInterruptibly(int arg) throws InterruptedException {
+        final Node node = addWaiter(Node.SHARED);
         boolean failed = true;
         try {
             for (; ; ) {
-                final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = node.predecessor();
+                final Node p = node.predecessor();
                 if (p == head) {
                     int r = tryAcquireShared(arg);
                     if (r >= 0) {
                         setHeadAndPropagate(node, r);
-                        p.next = null; // help GC
+                        // help GC
+                        p.next = null;
                         failed = false;
                         return;
                     }
                 }
-                if (shouldParkAfterFailedAcquire(p, node) &&
-                        parkAndCheckInterrupt())
+                if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
                     throw new InterruptedException();
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -1006,37 +1031,41 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param nanosTimeout max wait time
      * @return {@code true} if acquired
      */
-    private boolean doAcquireSharedNanos(int arg, long nanosTimeout)
-            throws InterruptedException {
-        if (nanosTimeout <= 0L)
+    private boolean doAcquireSharedNanos(int arg, long nanosTimeout) throws InterruptedException {
+        if (nanosTimeout <= 0L) {
             return false;
+        }
         final long deadline = System.nanoTime() + nanosTimeout;
-        final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addWaiter(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SHARED);
+        final Node node = addWaiter(Node.SHARED);
         boolean failed = true;
         try {
             for (; ; ) {
-                final com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = node.predecessor();
+                final Node p = node.predecessor();
                 if (p == head) {
                     int r = tryAcquireShared(arg);
                     if (r >= 0) {
                         setHeadAndPropagate(node, r);
-                        p.next = null; // help GC
+                        // help GC
+                        p.next = null;
                         failed = false;
                         return true;
                     }
                 }
                 nanosTimeout = deadline - System.nanoTime();
-                if (nanosTimeout <= 0L)
+                if (nanosTimeout <= 0L) {
                     return false;
-                if (shouldParkAfterFailedAcquire(p, node) &&
-                        nanosTimeout > spinForTimeoutThreshold)
+                }
+                if (shouldParkAfterFailedAcquire(p, node) && nanosTimeout > spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if (Thread.interrupted())
+                }
+                if (Thread.interrupted()) {
                     throw new InterruptedException();
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -1162,12 +1191,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
     /**
      * Returns {@code true} if synchronization is held exclusively with
      * respect to the current (calling) thread.  This method is invoked
-     * upon each call to a non-waiting {@link com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject} method.
+     * upon each call to a non-waiting {@link ConditionObject} method.
      * (Waiting methods instead invoke {@link #release}.)
      *
      * <p>The default implementation throws {@link
      * UnsupportedOperationException}. This method is invoked
-     * internally only within {@link com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject} methods, so need
+     * internally only within {@link ConditionObject} methods, so need
      * not be defined if conditions are not used.
      *
      * @return {@code true} if synchronization is held exclusively;
@@ -1191,9 +1220,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *            can represent anything you like.
      */
     public final void acquire(int arg) {
-        if (!tryAcquire(arg) &&
-                acquireQueued(addWaiter(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.EXCLUSIVE), arg))
+        if (!tryAcquire(arg) && acquireQueued(addWaiter(Node.EXCLUSIVE), arg)) {
             selfInterrupt();
+        }
     }
 
     /**
@@ -1210,12 +1239,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *            can represent anything you like.
      * @throws InterruptedException if the current thread is interrupted
      */
-    public final void acquireInterruptibly(int arg)
-            throws InterruptedException {
-        if (Thread.interrupted())
+    public final void acquireInterruptibly(int arg) throws InterruptedException {
+        if (Thread.interrupted()) {
             throw new InterruptedException();
-        if (!tryAcquire(arg))
+        }
+        if (!tryAcquire(arg)) {
             doAcquireInterruptibly(arg);
+        }
     }
 
     /**
@@ -1235,12 +1265,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @return {@code true} if acquired; {@code false} if timed out
      * @throws InterruptedException if the current thread is interrupted
      */
-    public final boolean tryAcquireNanos(int arg, long nanosTimeout)
-            throws InterruptedException {
-        if (Thread.interrupted())
+    public final boolean tryAcquireNanos(int arg, long nanosTimeout) throws InterruptedException {
+        if (Thread.interrupted()) {
             throw new InterruptedException();
-        return tryAcquire(arg) ||
-                doAcquireNanos(arg, nanosTimeout);
+        }
+        return tryAcquire(arg) || doAcquireNanos(arg, nanosTimeout);
     }
 
     /**
@@ -1255,9 +1284,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      */
     public final boolean release(int arg) {
         if (tryRelease(arg)) {
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node h = head;
-            if (h != null && h.waitStatus != 0)
+            Node h = head;
+            if (h != null && h.waitStatus != 0) {
                 unparkSuccessor(h);
+            }
             return true;
         }
         return false;
@@ -1275,8 +1305,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *            and can represent anything you like.
      */
     public final void acquireShared(int arg) {
-        if (tryAcquireShared(arg) < 0)
+        if (tryAcquireShared(arg) < 0) {
             doAcquireShared(arg);
+        }
     }
 
     /**
@@ -1293,12 +1324,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *            you like.
      * @throws InterruptedException if the current thread is interrupted
      */
-    public final void acquireSharedInterruptibly(int arg)
-            throws InterruptedException {
-        if (Thread.interrupted())
+    public final void acquireSharedInterruptibly(int arg) throws InterruptedException {
+        if (Thread.interrupted()) {
             throw new InterruptedException();
-        if (tryAcquireShared(arg) < 0)
+        }
+        if (tryAcquireShared(arg) < 0) {
             doAcquireSharedInterruptibly(arg);
+        }
     }
 
     /**
@@ -1317,12 +1349,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @return {@code true} if acquired; {@code false} if timed out
      * @throws InterruptedException if the current thread is interrupted
      */
-    public final boolean tryAcquireSharedNanos(int arg, long nanosTimeout)
-            throws InterruptedException {
-        if (Thread.interrupted())
+    public final boolean tryAcquireSharedNanos(int arg, long nanosTimeout) throws InterruptedException {
+        if (Thread.interrupted()) {
             throw new InterruptedException();
-        return tryAcquireShared(arg) >= 0 ||
-                doAcquireSharedNanos(arg, nanosTimeout);
+        }
+        return tryAcquireShared(arg) >= 0 || doAcquireSharedNanos(arg, nanosTimeout);
     }
 
     /**
@@ -1400,13 +1431,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * between some of our reads. We try this twice before
          * resorting to traversal.
          */
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node h, s;
+        Node h, s;
         Thread st;
-        if (((h = head) != null && (s = h.next) != null &&
-                s.prev == head && (st = s.thread) != null) ||
-                ((h = head) != null && (s = h.next) != null &&
-                        s.prev == head && (st = s.thread) != null))
+        if (((h = head) != null && (s = h.next) != null && s.prev == head && (st = s.thread) != null) ||
+                ((h = head) != null && (s = h.next) != null && s.prev == head && (st = s.thread) != null)) {
             return st;
+        }
 
         /*
          * Head's next field might not have been set yet, or may have
@@ -1416,12 +1446,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * guaranteeing termination.
          */
 
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node t = tail;
+        Node t = tail;
         Thread firstThread = null;
         while (t != null && t != head) {
             Thread tt = t.thread;
-            if (tt != null)
+            if (tt != null) {
                 firstThread = tt;
+            }
             t = t.prev;
         }
         return firstThread;
@@ -1438,11 +1469,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @throws NullPointerException if the thread is null
      */
     public final boolean isQueued(Thread thread) {
-        if (thread == null)
+        if (thread == null) {
             throw new NullPointerException();
-        for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = tail; p != null; p = p.prev)
-            if (p.thread == thread)
+        }
+        for (Node p = tail; p != null; p = p.prev) {
+            if (p.thread == thread) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -1456,11 +1490,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * ReentrantReadWriteLock.
      */
     final boolean apparentlyFirstQueuedIsExclusive() {
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node h, s;
-        return (h = head) != null &&
-                (s = h.next) != null &&
-                !s.isShared() &&
-                s.thread != null;
+        Node h, s;
+        return (h = head) != null && (s = h.next) != null &&
+                !s.isShared() && s.thread != null;
     }
 
     /**
@@ -1510,11 +1542,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
         // The correctness of this depends on head being initialized
         // before tail and on head.next being accurate if the current
         // thread is first in queue.
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node t = tail; // Read fields in reverse initialization order
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node h = head;
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node s;
-        return h != t &&
-                ((s = h.next) == null || s.thread != Thread.currentThread());
+
+        // Read fields in reverse initialization order
+        Node t = tail;
+        Node h = head;
+        Node s;
+        return h != t && ((s = h.next) == null || s.thread != Thread.currentThread());
     }
 
 
@@ -1532,9 +1565,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      */
     public final int getQueueLength() {
         int n = 0;
-        for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = tail; p != null; p = p.prev) {
-            if (p.thread != null)
+        for (Node p = tail; p != null; p = p.prev) {
+            if (p.thread != null) {
                 ++n;
+            }
         }
         return n;
     }
@@ -1552,10 +1586,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      */
     public final Collection<Thread> getQueuedThreads() {
         ArrayList<Thread> list = new ArrayList<Thread>();
-        for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = tail; p != null; p = p.prev) {
+        for (Node p = tail; p != null; p = p.prev) {
             Thread t = p.thread;
-            if (t != null)
+            if (t != null) {
                 list.add(t);
+            }
         }
         return list;
     }
@@ -1570,11 +1605,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      */
     public final Collection<Thread> getExclusiveQueuedThreads() {
         ArrayList<Thread> list = new ArrayList<Thread>();
-        for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = tail; p != null; p = p.prev) {
+        for (Node p = tail; p != null; p = p.prev) {
             if (!p.isShared()) {
                 Thread t = p.thread;
-                if (t != null)
+                if (t != null) {
                     list.add(t);
+                }
             }
         }
         return list;
@@ -1590,11 +1626,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      */
     public final Collection<Thread> getSharedQueuedThreads() {
         ArrayList<Thread> list = new ArrayList<Thread>();
-        for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = tail; p != null; p = p.prev) {
+        for (Node p = tail; p != null; p = p.prev) {
             if (p.isShared()) {
                 Thread t = p.thread;
-                if (t != null)
+                if (t != null) {
                     list.add(t);
+                }
             }
         }
         return list;
@@ -1612,8 +1649,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
     public String toString() {
         int s = getState();
         String q = hasQueuedThreads() ? "non" : "";
-        return super.toString() +
-                "[State = " + s + ", " + q + "empty queue]";
+        return super.toString() + "[State = " + s + ", " + q + "empty queue]";
     }
 
 
@@ -1626,11 +1662,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param node the node
      * @return true if is reacquiring
      */
-    final boolean isOnSyncQueue(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
-        if (node.waitStatus == com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION || node.prev == null)
+    final boolean isOnSyncQueue(Node node) {
+        if (node.waitStatus == Node.CONDITION || node.prev == null) {
             return false;
-        if (node.next != null) // If has successor, it must be on queue
+        }
+        // If has successor, it must be on queue
+        if (node.next != null) {
             return true;
+        }
         /*
          * node.prev can be non-null, but not yet on queue because
          * the CAS to place it on queue can fail. So we have to
@@ -1648,13 +1687,15 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *
      * @return true if present
      */
-    private boolean findNodeFromTail(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node t = tail;
+    private boolean findNodeFromTail(Node node) {
+        Node t = tail;
         for (; ; ) {
-            if (t == node)
+            if (t == node) {
                 return true;
-            if (t == null)
+            }
+            if (t == null) {
                 return false;
+            }
             t = t.prev;
         }
     }
@@ -1667,12 +1708,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @return true if successfully transferred (else the node was
      * cancelled before signal)
      */
-    final boolean transferForSignal(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
+    final boolean transferForSignal(Node node) {
         /*
          * If cannot change waitStatus, the node has been cancelled.
          */
-        if (!compareAndSetWaitStatus(node, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION, 0))
+        if (!compareAndSetWaitStatus(node, Node.CONDITION, 0)) {
             return false;
+        }
 
         /*
          * Splice onto queue and try to set waitStatus of predecessor to
@@ -1680,10 +1722,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * attempt to set waitStatus fails, wake up to resync (in which
          * case the waitStatus can be transiently and harmlessly wrong).
          */
-        com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node p = enq(node);
+        Node p = enq(node);
         int ws = p.waitStatus;
-        if (ws > 0 || !compareAndSetWaitStatus(p, ws, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.SIGNAL))
+        if (ws > 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL)) {
             LockSupport.unpark(node.thread);
+        }
         return true;
     }
 
@@ -1694,8 +1737,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param node the node
      * @return true if cancelled before the node was signalled
      */
-    final boolean transferAfterCancelledWait(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
-        if (compareAndSetWaitStatus(node, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION, 0)) {
+    final boolean transferAfterCancelledWait(Node node) {
+        if (compareAndSetWaitStatus(node, Node.CONDITION, 0)) {
             enq(node);
             return true;
         }
@@ -1705,8 +1748,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * incomplete transfer is both rare and transient, so just
          * spin.
          */
-        while (!isOnSyncQueue(node))
+        while (!isOnSyncQueue(node)) {
             Thread.yield();
+        }
         return false;
     }
 
@@ -1717,7 +1761,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param node the condition node for this wait
      * @return previous sync state
      */
-    final int fullyRelease(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
+    final int fullyRelease(Node node) {
         boolean failed = true;
         try {
             int savedState = getState();
@@ -1728,8 +1772,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
                 throw new IllegalMonitorStateException();
             }
         } finally {
-            if (failed)
-                node.waitStatus = com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CANCELLED;
+            if (failed) {
+                node.waitStatus = Node.CANCELLED;
+            }
         }
     }
 
@@ -1743,7 +1788,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @return {@code true} if owned
      * @throws NullPointerException if the condition is null
      */
-    public final boolean owns(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject condition) {
+    public final boolean owns(ConditionObject condition) {
         return condition.isOwnedBy(this);
     }
 
@@ -1763,9 +1808,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *                                      not associated with this synchronizer
      * @throws NullPointerException         if the condition is null
      */
-    public final boolean hasWaiters(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject condition) {
-        if (!owns(condition))
+    public final boolean hasWaiters(ConditionObject condition) {
+        if (!owns(condition)) {
             throw new IllegalArgumentException("Not owner");
+        }
         return condition.hasWaiters();
     }
 
@@ -1785,9 +1831,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *                                      not associated with this synchronizer
      * @throws NullPointerException         if the condition is null
      */
-    public final int getWaitQueueLength(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject condition) {
-        if (!owns(condition))
+    public final int getWaitQueueLength(ConditionObject condition) {
+        if (!owns(condition)) {
             throw new IllegalArgumentException("Not owner");
+        }
         return condition.getWaitQueueLength();
     }
 
@@ -1807,15 +1854,16 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      *                                      not associated with this synchronizer
      * @throws NullPointerException         if the condition is null
      */
-    public final Collection<Thread> getWaitingThreads(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject condition) {
-        if (!owns(condition))
+    public final Collection<Thread> getWaitingThreads(ConditionObject condition) {
+        if (!owns(condition)) {
             throw new IllegalArgumentException("Not owner");
+        }
         return condition.getWaitingThreads();
     }
 
     /**
      * Condition implementation for a {@link
-     * com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer} serving as the basis of a {@link
+     * AbstractQueuedSynchronizer} serving as the basis of a {@link
      * Lock} implementation.
      *
      * <p>Method documentation for this class describes mechanics,
@@ -1833,11 +1881,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
         /**
          * First node of condition queue.
          */
-        private transient com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node firstWaiter;
+        private transient Node firstWaiter;
         /**
          * Last node of condition queue.
          */
-        private transient com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node lastWaiter;
+        private transient Node lastWaiter;
 
         /**
          * Creates a new {@code ConditionObject} instance.
@@ -1852,18 +1900,19 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          *
          * @return its new wait node
          */
-        private com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node addConditionWaiter() {
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node t = lastWaiter;
+        private Node addConditionWaiter() {
+            Node t = lastWaiter;
             // If lastWaiter is cancelled, clean out.
-            if (t != null && t.waitStatus != com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION) {
+            if (t != null && t.waitStatus != Node.CONDITION) {
                 unlinkCancelledWaiters();
                 t = lastWaiter;
             }
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = new com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node(Thread.currentThread(), com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION);
-            if (t == null)
+            Node node = new Node(Thread.currentThread(), Node.CONDITION);
+            if (t == null) {
                 firstWaiter = node;
-            else
+            } else {
                 t.nextWaiter = node;
+            }
             lastWaiter = node;
             return node;
         }
@@ -1875,13 +1924,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          *
          * @param first (non-null) the first node on condition queue
          */
-        private void doSignal(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node first) {
+        private void doSignal(Node first) {
             do {
-                if ((firstWaiter = first.nextWaiter) == null)
+                if ((firstWaiter = first.nextWaiter) == null) {
                     lastWaiter = null;
+                }
                 first.nextWaiter = null;
-            } while (!transferForSignal(first) &&
-                    (first = firstWaiter) != null);
+            } while (!transferForSignal(first) && (first = firstWaiter) != null);
         }
 
         /**
@@ -1889,10 +1938,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          *
          * @param first (non-null) the first node on condition queue
          */
-        private void doSignalAll(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node first) {
+        private void doSignalAll(Node first) {
             lastWaiter = firstWaiter = null;
             do {
-                com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node next = first.nextWaiter;
+                Node next = first.nextWaiter;
                 first.nextWaiter = null;
                 transferForSignal(first);
                 first = next;
@@ -1914,20 +1963,23 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * storms.
          */
         private void unlinkCancelledWaiters() {
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node t = firstWaiter;
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node trail = null;
+            Node t = firstWaiter;
+            Node trail = null;
             while (t != null) {
-                com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node next = t.nextWaiter;
-                if (t.waitStatus != com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION) {
+                Node next = t.nextWaiter;
+                if (t.waitStatus != Node.CONDITION) {
                     t.nextWaiter = null;
-                    if (trail == null)
+                    if (trail == null) {
                         firstWaiter = next;
-                    else
+                    } else {
                         trail.nextWaiter = next;
-                    if (next == null)
+                    }
+                    if (next == null) {
                         lastWaiter = trail;
-                } else
+                    }
+                } else {
                     trail = t;
+                }
                 t = next;
             }
         }
@@ -1943,11 +1995,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          *                                      returns {@code false}
          */
         public final void signal() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node first = firstWaiter;
-            if (first != null)
+            }
+            Node first = firstWaiter;
+            if (first != null) {
                 doSignal(first);
+            }
         }
 
         /**
@@ -1958,11 +2012,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          *                                      returns {@code false}
          */
         public final void signalAll() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node first = firstWaiter;
-            if (first != null)
+            }
+            Node first = firstWaiter;
+            if (first != null) {
                 doSignalAll(first);
+            }
         }
 
         /**
@@ -1977,16 +2033,18 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * </ol>
          */
         public final void awaitUninterruptibly() {
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addConditionWaiter();
+            Node node = addConditionWaiter();
             int savedState = fullyRelease(node);
             boolean interrupted = false;
             while (!isOnSyncQueue(node)) {
                 LockSupport.park(this);
-                if (Thread.interrupted())
+                if (Thread.interrupted()) {
                     interrupted = true;
+                }
             }
-            if (acquireQueued(node, savedState) || interrupted)
+            if (acquireQueued(node, savedState) || interrupted) {
                 selfInterrupt();
+            }
         }
 
         /*
@@ -2010,22 +2068,20 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * before signalled, REINTERRUPT if after signalled, or
          * 0 if not interrupted.
          */
-        private int checkInterruptWhileWaiting(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node) {
-            return Thread.interrupted() ?
-                    (transferAfterCancelledWait(node) ? THROW_IE : REINTERRUPT) :
-                    0;
+        private int checkInterruptWhileWaiting(Node node) {
+            return Thread.interrupted() ? (transferAfterCancelledWait(node) ? THROW_IE : REINTERRUPT) : 0;
         }
 
         /**
          * Throws InterruptedException, reinterrupts current thread, or
          * does nothing, depending on mode.
          */
-        private void reportInterruptAfterWait(int interruptMode)
-                throws InterruptedException {
-            if (interruptMode == THROW_IE)
+        private void reportInterruptAfterWait(int interruptMode) throws InterruptedException {
+            if (interruptMode == THROW_IE) {
                 throw new InterruptedException();
-            else if (interruptMode == REINTERRUPT)
+            } else if (interruptMode == REINTERRUPT) {
                 selfInterrupt();
+            }
         }
 
         /**
@@ -2042,22 +2098,28 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * </ol>
          */
         public final void await() throws InterruptedException {
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addConditionWaiter();
+            }
+            Node node = addConditionWaiter();
             int savedState = fullyRelease(node);
             int interruptMode = 0;
             while (!isOnSyncQueue(node)) {
                 LockSupport.park(this);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
-            if (node.nextWaiter != null) // clean up if cancelled
+            }
+            // clean up if cancelled
+            if (node.nextWaiter != null) {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
         }
 
         /**
@@ -2073,11 +2135,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * <li> If interrupted while blocked in step 4, throw InterruptedException.
          * </ol>
          */
-        public final long awaitNanos(long nanosTimeout)
-                throws InterruptedException {
-            if (Thread.interrupted())
+        public final long awaitNanos(long nanosTimeout) throws InterruptedException {
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addConditionWaiter();
+            }
+            Node node = addConditionWaiter();
             int savedState = fullyRelease(node);
             final long deadline = System.nanoTime() + nanosTimeout;
             int interruptMode = 0;
@@ -2086,18 +2148,23 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
                     transferAfterCancelledWait(node);
                     break;
                 }
-                if (nanosTimeout >= spinForTimeoutThreshold)
+                if (nanosTimeout >= spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                }
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
                 nanosTimeout = deadline - System.nanoTime();
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
-            if (node.nextWaiter != null)
+            }
+            if (node.nextWaiter != null) {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
             return deadline - System.nanoTime();
         }
 
@@ -2115,12 +2182,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * <li> If timed out while blocked in step 4, return false, else true.
          * </ol>
          */
-        public final boolean awaitUntil(Date deadline)
-                throws InterruptedException {
+        public final boolean awaitUntil(Date deadline) throws InterruptedException {
             long abstime = deadline.getTime();
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addConditionWaiter();
+            }
+            Node node = addConditionWaiter();
             int savedState = fullyRelease(node);
             boolean timedout = false;
             int interruptMode = 0;
@@ -2130,15 +2197,19 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
                     break;
                 }
                 LockSupport.parkUntil(this, abstime);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
-            if (node.nextWaiter != null)
+            }
+            if (node.nextWaiter != null) {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
             return !timedout;
         }
 
@@ -2156,12 +2227,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * <li> If timed out while blocked in step 4, return false, else true.
          * </ol>
          */
-        public final boolean await(long time, TimeUnit unit)
-                throws InterruptedException {
+        public final boolean await(long time, TimeUnit unit) throws InterruptedException {
             long nanosTimeout = unit.toNanos(time);
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
-            com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node = addConditionWaiter();
+            }
+            Node node = addConditionWaiter();
             int savedState = fullyRelease(node);
             final long deadline = System.nanoTime() + nanosTimeout;
             boolean timedout = false;
@@ -2171,18 +2242,23 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
                     timedout = transferAfterCancelledWait(node);
                     break;
                 }
-                if (nanosTimeout >= spinForTimeoutThreshold)
+                if (nanosTimeout >= spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                }
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
                 nanosTimeout = deadline - System.nanoTime();
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
-            if (node.nextWaiter != null)
+            }
+            if (node.nextWaiter != null) {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
             return !timedout;
         }
 
@@ -2194,24 +2270,26 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          *
          * @return {@code true} if owned
          */
-        final boolean isOwnedBy(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer sync) {
-            return sync == com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.this;
+        final boolean isOwnedBy(AbstractQueuedSynchronizer sync) {
+            return sync == AbstractQueuedSynchronizer.this;
         }
 
         /**
          * Queries whether any threads are waiting on this condition.
-         * Implements {@link com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer#hasWaiters(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject)}.
+         * Implements {@link AbstractQueuedSynchronizer#hasWaiters(ConditionObject)}.
          *
          * @return {@code true} if there are any waiting threads
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *                                      returns {@code false}
          */
         protected final boolean hasWaiters() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
-            for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node w = firstWaiter; w != null; w = w.nextWaiter) {
-                if (w.waitStatus == com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION)
+            }
+            for (Node w = firstWaiter; w != null; w = w.nextWaiter) {
+                if (w.waitStatus == Node.CONDITION) {
                     return true;
+                }
             }
             return false;
         }
@@ -2219,19 +2297,21 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
         /**
          * Returns an estimate of the number of threads waiting on
          * this condition.
-         * Implements {@link com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer#getWaitQueueLength(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject)}.
+         * Implements {@link AbstractQueuedSynchronizer#getWaitQueueLength(ConditionObject)}.
          *
          * @return the estimated number of waiting threads
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *                                      returns {@code false}
          */
         protected final int getWaitQueueLength() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
+            }
             int n = 0;
-            for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node w = firstWaiter; w != null; w = w.nextWaiter) {
-                if (w.waitStatus == com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION)
+            for (Node w = firstWaiter; w != null; w = w.nextWaiter) {
+                if (w.waitStatus == Node.CONDITION) {
                     ++n;
+                }
             }
             return n;
         }
@@ -2239,21 +2319,23 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
         /**
          * Returns a collection containing those threads that may be
          * waiting on this Condition.
-         * Implements {@link com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer#getWaitingThreads(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.ConditionObject)}.
+         * Implements {@link AbstractQueuedSynchronizer#getWaitingThreads(ConditionObject)}.
          *
          * @return the collection of threads
          * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
          *                                      returns {@code false}
          */
         protected final Collection<Thread> getWaitingThreads() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
+            }
             ArrayList<Thread> list = new ArrayList<Thread>();
-            for (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node w = firstWaiter; w != null; w = w.nextWaiter) {
-                if (w.waitStatus == com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.CONDITION) {
+            for (Node w = firstWaiter; w != null; w = w.nextWaiter) {
+                if (w.waitStatus == Node.CONDITION) {
                     Thread t = w.thread;
-                    if (t != null)
+                    if (t != null) {
                         list.add(t);
+                    }
                 }
             }
             return list;
@@ -2270,25 +2352,24 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * otherwise be done with atomic field updaters).
      */
     private static final Unsafe unsafe = Unsafe.getUnsafe();
+
     private static final long stateOffset;
+
     private static final long headOffset;
+
     private static final long tailOffset;
+
     private static final long waitStatusOffset;
+
     private static final long nextOffset;
 
     static {
         try {
-            stateOffset = unsafe.objectFieldOffset
-                    (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.class.getDeclaredField("state"));
-            headOffset = unsafe.objectFieldOffset
-                    (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.class.getDeclaredField("head"));
-            tailOffset = unsafe.objectFieldOffset
-                    (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.class.getDeclaredField("tail"));
-            waitStatusOffset = unsafe.objectFieldOffset
-                    (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.class.getDeclaredField("waitStatus"));
-            nextOffset = unsafe.objectFieldOffset
-                    (com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node.class.getDeclaredField("next"));
-
+            stateOffset = unsafe.objectFieldOffset(AbstractQueuedSynchronizer.class.getDeclaredField("state"));
+            headOffset = unsafe.objectFieldOffset(AbstractQueuedSynchronizer.class.getDeclaredField("head"));
+            tailOffset = unsafe.objectFieldOffset(AbstractQueuedSynchronizer.class.getDeclaredField("tail"));
+            waitStatusOffset = unsafe.objectFieldOffset(Node.class.getDeclaredField("waitStatus"));
+            nextOffset = unsafe.objectFieldOffset(Node.class.getDeclaredField("next"));
         } catch (Exception ex) {
             throw new Error(ex);
         }
@@ -2297,33 +2378,28 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
     /**
      * CAS head field. Used only by enq.
      */
-    private final boolean compareAndSetHead(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node update) {
+    private final boolean compareAndSetHead(Node update) {
         return unsafe.compareAndSwapObject(this, headOffset, null, update);
     }
 
     /**
      * CAS tail field. Used only by enq.
      */
-    private final boolean compareAndSetTail(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node expect, com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node update) {
+    private final boolean compareAndSetTail(Node expect, Node update) {
         return unsafe.compareAndSwapObject(this, tailOffset, expect, update);
     }
 
     /**
      * CAS waitStatus field of a node.
      */
-    private static final boolean compareAndSetWaitStatus(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node,
-                                                         int expect,
-                                                         int update) {
-        return unsafe.compareAndSwapInt(node, waitStatusOffset,
-                expect, update);
+    private static final boolean compareAndSetWaitStatus(Node node, int expect, int update) {
+        return unsafe.compareAndSwapInt(node, waitStatusOffset, expect, update);
     }
 
     /**
      * CAS next field of a node.
      */
-    private static final boolean compareAndSetNext(com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node node,
-                                                   com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node expect,
-                                                   com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer.Node update) {
+    private static final boolean compareAndSetNext(Node node, Node expect, Node update) {
         return unsafe.compareAndSwapObject(node, nextOffset, expect, update);
     }
 }
