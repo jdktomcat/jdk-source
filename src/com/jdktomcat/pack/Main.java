@@ -21,8 +21,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        String openId = "81579ee7c4f1b0ad";
-        System.out.println(openId.hashCode() % 100);
+        String openId = "汤旗地方都是范德萨范德萨发法定放东山风动石地方第三方第三方";
+        System.out.println(openId.getBytes().length);
     }
 }
 
