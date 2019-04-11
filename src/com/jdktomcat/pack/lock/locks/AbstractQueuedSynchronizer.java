@@ -361,28 +361,40 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
     static final class Node {
         /**
          * Marker to indicate a node is waiting in shared mode
+         *
+         * 标记表明这个节点是处于共享模式等待状态
          */
         static final Node SHARED = new Node();
         /**
          * Marker to indicate a node is waiting in exclusive mode
+         *
+         * 标记表明这个节点是处于独占模式等待状态
          */
         static final Node EXCLUSIVE = null;
 
         /**
          * waitStatus value to indicate thread has cancelled
+         *
+         * 等待状态:该值表示线程已经取消
          */
         static final int CANCELLED = 1;
         /**
          * waitStatus value to indicate successor's thread needs unparking
+         *
+         * 等待状态:该值表示后任线程需要取消搁置
          */
         static final int SIGNAL = -1;
         /**
          * waitStatus value to indicate thread is waiting on condition
+         *
+         * 等待状态:该值表示线程在当前条件下等待
          */
         static final int CONDITION = -2;
         /**
          * waitStatus value to indicate the next acquireShared should
          * unconditionally propagate
+         *
+         * 等待状态:该值表示下一个获得共享应该无条件传播
          */
         static final int PROPAGATE = -3;
 
