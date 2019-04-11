@@ -1,7 +1,6 @@
 package com.jdktomcat.pack.lock.locks.example;
 
 import com.jdktomcat.pack.lock.locks.AbstractQueuedSynchronizer;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
