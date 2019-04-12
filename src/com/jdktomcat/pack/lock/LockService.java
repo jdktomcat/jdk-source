@@ -2,7 +2,6 @@ package com.jdktomcat.pack.lock;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 类描述：Java锁测试类
@@ -22,6 +21,7 @@ public class LockService {
     public void serviceMethod() {
         try {
             lock.lock();
+            Thread.sleep(10000);
             System.out.println("ThreadName=" + Thread.currentThread().getName() + "获得锁定");
         } catch (Exception ex) {
             ex.printStackTrace();
