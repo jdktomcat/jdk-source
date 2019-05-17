@@ -190,7 +190,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      *
      * When bin lists are treeified, split, or untreeified, we keep
      * them in the same relative access/traversal order (i.e., field
-     * Node.next) to better preserve locality, and to slightly
+     * ShipNode.next) to better preserve locality, and to slightly
      * simplify handling of splits and traversals that invoke
      * iterator.remove. When using comparators on insertion, to keep a
      * total ordering (or as close as is required here) across
@@ -1905,7 +1905,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
 
     /**
      * Entry for Tree bins. Extends LinkedHashMap.Entry (which in turn
-     * extends Node) so can be used as extension of either regular or
+     * extends ShipNode) so can be used as extension of either regular or
      * linked node.
      */
     static final class TreeNode<K, V> extends LinkedHashMap.Entry<K, V> {

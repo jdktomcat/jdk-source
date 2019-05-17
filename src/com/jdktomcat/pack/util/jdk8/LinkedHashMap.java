@@ -187,7 +187,7 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> implements Map<K, V> {
      */
 
     /**
-     * HashMap.Node subclass for normal LinkedHashMap entries.
+     * HashMap.ShipNode subclass for normal LinkedHashMap entries.
      */
     static class Entry<K, V> extends HashMap.Node<K, V> {
         LinkedHashMap.Entry<K, V> before, after;

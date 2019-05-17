@@ -611,7 +611,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
     /**
      * Creates and enqueues node for current thread and given mode.
      *
-     * @param mode Node.EXCLUSIVE for exclusive, Node.SHARED for shared
+     * @param mode ShipNode.EXCLUSIVE for exclusive, ShipNode.SHARED for shared
      * @return the new node
      */
     private Node addWaiter(Node mode) {
