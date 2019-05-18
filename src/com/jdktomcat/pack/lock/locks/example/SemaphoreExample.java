@@ -35,17 +35,14 @@ public class SemaphoreExample {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
             });
         }
         threadPool.shutdown();
         System.out.println("finish");
     }
 
-    /**
-     * 模拟请求的耗时操作
-     */
     public static void test(int threadNum) throws InterruptedException {
+        // 模拟请求的耗时操作
         Thread.sleep(1000);
         System.out.println("threadNum:" + threadNum);
         // 模拟请求的耗时操作
