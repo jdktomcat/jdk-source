@@ -2,6 +2,7 @@ package com.jdktomcat.pack.java8.stream;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 类描述：流式处理测试类
@@ -21,5 +22,11 @@ public class StreamExample {
         stringList.add("bbb2");
         stringList.add("ddd1");
         stringList.stream().filter((s) -> s.startsWith("a")).forEach(System.out::println);
+
+        //测试 Reduce (规约)操作
+        Optional<String> reduced =
+                stringList.stream().sorted().reduce((s1, s2) -> s1 + "#" + s2);
+
+        reduced.ifPresent(System.out::println);
     }
 }
