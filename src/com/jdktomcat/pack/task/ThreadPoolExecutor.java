@@ -93,9 +93,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * 　　１.默认：java.util.concurrent.ThreadPoolExecutor.AbortPolicy，这种策略在调用execute
  * 　　　 方法时会抛出一个运行时异常RejectedExecutionException。
  * 　　２.java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy,调用线程自己去运行任务。
- * 　　 这种策略提供了一种简单反馈控制机制：降低新任务提交速度。
- * ３.java.util.concurrent.ThreadPoolExecutor.DiscardPolicy，任务不会被执行，简单丢弃。
- * 　４.java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy，如果线程池没有被关
+ * 　　   这种策略提供了一种简单反馈控制机制：降低新任务提交速度。
+ *    ３.java.util.concurrent.ThreadPoolExecutor.DiscardPolicy，任务不会被执行，简单丢弃。
+ *    ４.java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy，如果线程池没有被关
  * 　　　闭，在队列头部的任务将被丢弃，然后在重试提交，直到成功。
  * 可以自己去自定义RejectedExecutionHandler，如果这么做的话需要特别注意策略设计只能适用于特定的容量
  * 或者队列策略。
@@ -168,54 +168,90 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * 例如，当请求一个线程工厂创建线程失败时，当一个将要退出的线程在终止之前还在运行、记录。
      * 用户可见池大小是指目前执行线程集合大小.
      * <p>
-     * 属性runState提供了线程池生命周期控制，状态值枚举如下：
-     * RUNNING:接收新任务、处理排队任务。
-     * SHUTDOWN:不再接收新任务，但是会处理已经排队任务。
-     * STOP:不再接收新任务，也不会处理已排队任务，正在执行的任务也会被打断。
-     * TIDYING：所有的任务已经终止，workerCount为0。线程过度为TIDYING状态，将执行terminated()钩子方法。
-     * TERMINATED:terminated()钩子方法已执行完成。
+     * The runState provides the main lifecycle control, taking on values:
      * <p>
-     * 这些状态数值数字顺序很重要，为了能够排序比较。初始状态runState随着时间单调地增长，
-     * 但是不会转化为依次转化为每个状态。转化如下：
-     * RUNNING --> SHUTDOWN:调用shutdown()，抑或finalize()暗示。
-     * RUNNING、SHUTDOWN -->　STOP:调用shutdownNow()。
-     * SHUTDOWN --> TIDYING:当队列与池都为空时。
-     * STOP --> TIDYING:当池为空时。
-     * TIDYING --> TERMINATED:调用terminated()钩子方法完成。
-     * 线程在方法awaitTermination()中将会等待直到状态变为TERMINATED。
-     * 检测状态从SHUTDOWN转化为TIDYING不够直截了当的，因为队列可能变成非空判断之后变为空。
-     * 反之亦然，如果这样的话，我们只能终止它，在看到它为空时，我看到workerCount为0(有时带来再次检查)
+     * RUNNING:  Accept new tasks and process queued tasks
+     * SHUTDOWN: Don't accept new tasks, but process queued tasks
+     * STOP:     Don't accept new tasks, don't process queued tasks,
+     * and interrupt in-progress tasks
+     * TIDYING:  All tasks have terminated, workerCount is zero,
+     * the thread transitioning to state TIDYING
+     * will run the terminated() hook method
+     * TERMINATED: terminated() has completed
+     * <p>
+     * The numerical order among these values matters, to allow
+     * ordered comparisons. The runState monotonically increases over
+     * time, but need not hit each state. The transitions are:
+     * <p>
+     * RUNNING -> SHUTDOWN
+     * On invocation of shutdown(), perhaps implicitly in finalize()
+     * (RUNNING or SHUTDOWN) -> STOP
+     * On invocation of shutdownNow()
+     * SHUTDOWN -> TIDYING
+     * When both queue and pool are empty
+     * STOP -> TIDYING
+     * When pool is empty
+     * TIDYING -> TERMINATED
+     * When the terminated() hook method has completed
+     * <p>
+     * Threads waiting in awaitTermination() will return when the
+     * state reaches TERMINATED.
+     * <p>
+     * runState提供了线程池生命周期控制，取值说明如下：
+     * RUNNING:接收新任务,处理队列任务。
+     * SHUTDOWN:不会再接收新任务,但会处理队列任务。
+     * STOP:不会再接收新任务,也不会处理队列任务,打断正在处理任务。
+     * TIDYING:所有的任务都已终止,workerCount值为0,线程转化为TIDYING状态,将会调用terminated()钩子方法。
+     * TERMINATED:terminated()方法已经被执行。
+     * <p>
+     * Detecting the transition from SHUTDOWN to TIDYING is less
+     * straightforward than you'd like because the queue may become
+     * empty after non-empty and vice versa during SHUTDOWN state, but
+     * we can only terminate if, after seeing that it is empty, we see
+     * that workerCount is 0 (which sometimes entails a recheck -- see
+     * below).
      */
     private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
 
     /**
-     * 计算位数 29
+     * 统计位数:29
      */
     private static final int COUNT_BITS = Integer.SIZE - 3;
 
     /**
-     * 线程容量最大值:2^29 - 1
+     * 线程池最大容量2^29-1
      */
     private static final int CAPACITY = (1 << COUNT_BITS) - 1;
 
 
     /**
-     * runState is stored in the high-order bits
+     * runState is stored in the high-order bits:-1^29
      */
     private static final int RUNNING = -1 << COUNT_BITS;
 
+    /**
+     * 0^29
+     */
     private static final int SHUTDOWN = 0 << COUNT_BITS;
 
+    /**
+     * 1^29
+     */
     private static final int STOP = 1 << COUNT_BITS;
 
+    /**
+     * 2^29
+     */
     private static final int TIDYING = 2 << COUNT_BITS;
 
+    /**
+     * 3^29
+     */
     private static final int TERMINATED = 3 << COUNT_BITS;
 
-    // Packing and unpacking ctl
 
     /**
-     * 解包运行状态
+     * 解析运行状态
      *
      * @param c ctl
      * @return 运行状态
@@ -225,20 +261,20 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     }
 
     /**
-     * 解包工作线程数量
+     * 解析执行数量
      *
      * @param c ctl
-     * @return 工作线程数量
+     * @return 执行数量
      */
     private static int workerCountOf(int c) {
         return c & CAPACITY;
     }
 
     /**
-     * 连接
+     * 计算ctl值
      *
-     * @param rs runState运行状态
-     * @param wc workerCount线程数量
+     * @param rs 运行状态
+     * @param wc 执行数
      * @return ctl
      */
     private static int ctlOf(int rs, int wc) {
@@ -250,14 +286,34 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * These depend on the bit layout and on workerCount being never negative.
      */
 
+    /**
+     * 判断运行状态是否小于目标
+     *
+     * @param c ctl
+     * @param s runState 运行状态
+     * @return 比较结果
+     */
     private static boolean runStateLessThan(int c, int s) {
         return c < s;
     }
 
+    /**
+     * 判断运行状态是否不小于目标
+     *
+     * @param c ctl
+     * @param s runState 运行状态
+     * @return 比较结果
+     */
     private static boolean runStateAtLeast(int c, int s) {
         return c >= s;
     }
 
+    /**
+     * 判断是否RUNNING状态
+     *
+     * @param c ctl
+     * @return 是否
+     */
     private static boolean isRunning(int c) {
         return c < SHUTDOWN;
     }
@@ -280,6 +336,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * Decrements the workerCount field of ctl. This is called only on
      * abrupt termination of a thread (see processWorkerExit). Other
      * decrements are performed within getTask.
+     * 递减ctl的workerCount属性值。只有在突然中止线程时才会调用。
      */
     private void decrementWorkerCount() {
         do {
@@ -296,6 +353,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * queues such as DelayQueues for which poll() is allowed to
      * return null even if it may later return non-null when delays
      * expire.
+     * 这个队列用于容纳任务和管理处理线程。我们不想workQueue.poll()返回null除非
+     * workQueue.isEmpty()
      */
     private final BlockingQueue<Runnable> workQueue;
 
@@ -1022,7 +1081,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                 // if not, ensure thread is not interrupted.  This
                 // requires a recheck in second case to deal with
                 // shutdownNow race while clearing interrupt
-                if ((runStateAtLeast(ctl.get(), STOP) || (Thread.interrupted() && runStateAtLeast(ctl.get(), STOP))) && !wt.isInterrupted()) {
+                boolean isInterrupt = (runStateAtLeast(ctl.get(), STOP) || (Thread.interrupted() && runStateAtLeast(ctl.get(), STOP))) && !wt.isInterrupted();
+                if (isInterrupt) {
                     wt.interrupt();
                 }
                 try {
