@@ -15,6 +15,6 @@ public class TreeMapTest {
         for (int i = 0; i < 10; i++) {
             treeMap.put("key" + i, 10 - i);
         }
-        System.out.println(treeMap.firstKey());
+        System.out.println(treeMap);
     }
 }

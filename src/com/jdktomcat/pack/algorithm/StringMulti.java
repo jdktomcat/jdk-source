@@ -40,7 +40,7 @@ public class StringMulti {
 
 
     public static void main(String[] args) {
-        System.out.println(multiply("0", "0"));
+        System.out.println(multiply("999999999999999999999999", "9999999999999999"));
     }
 
 }
