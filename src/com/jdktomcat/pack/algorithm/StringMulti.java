@@ -1,7 +1,7 @@
 package com.jdktomcat.pack.algorithm;
 
 /**
- * 类描述：
+ * 类描述：大数相乘
  *
  * @author 汤旗
  * @date 2019-05-22 13:43
