@@ -3,12 +3,13 @@ package com.jdktomcat.pack.collection;
 import java.util.ArrayList;
 
 /**
- * 类描述：
+ * 类描述：ArrayList源码测试
  *
  * @author 汤旗
  * @date 2019-07-20 10:35
  */
 public class EnsureCapacityTest {
+
     public static void main(String[] args) {
         ArrayList<Object> list = new ArrayList<Object>();
         final int N = 10000000;
