@@ -53,10 +53,8 @@ public class NumberList {
             return root;
         } else if (root1 != null) {
             return root1;
-        } else if (root2 != null) {
+        } else {
             return root2;
         }
-        return null;
     }
-
 }
