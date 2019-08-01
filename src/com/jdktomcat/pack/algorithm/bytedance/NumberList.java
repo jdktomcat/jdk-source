@@ -45,11 +45,6 @@ public class NumberList {
                     tempNode.setNext(node);
                 }
             } while (node1 != null && node2 != null);
-            if (node1 != null) {
-                node.setNext(node1);
-            } else if (node2 != null) {
-                node.setNext(node2);
-            }
             return root;
         } else if (root1 != null) {
             return root1;
