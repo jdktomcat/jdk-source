@@ -72,7 +72,7 @@ public class ChangeQuestion {
      */
     public static void main(String[] args) {
         int[] units = new int[]{1, 2, 5, 10};
-        int total = 25;
+        int total = 30;
         System.out.println(calculate(units, total));
     }
 
