@@ -69,8 +69,8 @@ public class ChangeQuestion {
      * @param args 参数
      */
     public static void main(String[] args) {
-        int[] units = new int[]{1, 2, 5, 10, 20, 50, 100};
-        int total = 50;
+        int[] units = new int[]{1, 2, 5, 10};
+        int total = 25;
         System.out.println(calculate(units, total));
     }
 
