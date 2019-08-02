@@ -57,8 +57,10 @@ public class ChangeQuestion {
     private static int calculate(int[] units, int total) {
         Set<String> targetSet = new HashSet<>();
         change(units, total, null, targetSet);
-        for (String target : targetSet) {
-            System.out.println(target);
+        Object[] lineArray = targetSet.toArray();
+        Arrays.sort(lineArray);
+        for (Object line : lineArray) {
+            System.out.println(line);
         }
         return targetSet.size();
     }
