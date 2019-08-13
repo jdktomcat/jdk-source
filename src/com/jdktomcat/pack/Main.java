@@ -1,6 +1,7 @@
 package com.jdktomcat.pack;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 
 /**
  * @author Administrator
@@ -28,11 +29,12 @@ public class Main {
 //        Long diff = 480* 10000L;
 //        System.out.println(db - spent < diff);
 
-        Long v1 = 0L;
-
-        Long v2 = Long.MAX_VALUE;
-
-        System.out.print(v2.compareTo(v1));
+//        Long v1 = 0L;
+//
+//        Long v2 = Long.MAX_VALUE;
+//
+//        System.out.print(v2.compareTo(v1));
+        System.out.println(new Random().nextInt(2));
     }
 }
 
