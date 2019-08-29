@@ -1,5 +1,8 @@
 package com.jdktomcat.pack.algorithm.huawei;
 
+import java.util.Scanner;
+import java.util.TreeSet;
+
 /**
  * 类描述：随机数问题
  *
@@ -9,7 +12,17 @@ package com.jdktomcat.pack.algorithm.huawei;
 public class RandomProblem {
 
     public static void main(String[] args) {
-
+        Scanner scanner = new Scanner(System.in);
+        while(scanner.hasNext()){
+            int num = scanner.nextInt();
+            TreeSet<Integer> set = new TreeSet<Integer>();
+            for(int i = 0 ; i < num ;i++){
+                int curr = scanner.nextInt();
+                set.add(curr);
+            }
+            for(Integer i : set){
+                System.out.println(i);
+            }
+        }
     }
-
 }

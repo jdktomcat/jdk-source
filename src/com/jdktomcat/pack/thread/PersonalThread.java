@@ -1,6 +1,5 @@
 package com.jdktomcat.pack.thread;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 类描述：自定义线程类
@@ -18,7 +17,7 @@ public class PersonalThread extends Thread {
      *
      * @param name the name of the new thread
      */
-    public PersonalThread(@NotNull String name, @NotNull Object object) {
+    public PersonalThread(String name, Object object) {
         super(name);
         this.object = object;
     }

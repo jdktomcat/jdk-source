@@ -1,6 +1,5 @@
 package com.jdktomcat.pack.thread;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 类描述：线程休眠
@@ -16,7 +15,7 @@ public class SleepThread extends Thread {
      *
      * @param name the name of the new thread
      */
-    public SleepThread(@NotNull String name) {
+    public SleepThread(String name) {
         super(name);
     }
 
