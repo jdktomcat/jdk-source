@@ -15,7 +15,7 @@ import java.util.List;
 public class StringTest {
 
     public static void main(String[] args) {
-        String ipConfig = "36.110.177.16-36.110.177.24|36.110.179.96-36.110.179.119|106.39.177.176-106.39.177.191|111.202.11.16-111.202.11.128|120.52.84.0-120.52.84.32";
+        String ipConfig = "58.247.206.139-58.247.206.158|101.91.60.100-101.91.60.103|101.91.60.111|101.91.60.112|101.91.60.114|101.91.60.22-101.91.60.26|58.251.80.44-58.251.80.63";
         List<String> ips = Splitter.on("|").omitEmptyStrings().splitToList(ipConfig.trim());
         List<String> ipList = Lists.newArrayList();
         for (String ip : ips) {
