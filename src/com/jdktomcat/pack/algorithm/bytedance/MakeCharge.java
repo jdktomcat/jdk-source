@@ -33,8 +33,8 @@ public class MakeCharge {
     }
 
     public static void main(String[] args) {
-        int[] units = new int[]{1, 2, 5, 10, 25};
-        int total = 90;
+        int[] units = new int[]{1, 2, 5, 25};
+        int total = 30;
         System.out.println(charge(total, units));
     }
 }
