@@ -50,7 +50,6 @@ public class MakeCharge {
             return 1;
         }
         int total = 0;
-
         for (int index = startIndex; index < units.length; index++) {
             int unit = units[index];
             if (unit <= target) {
@@ -63,12 +62,45 @@ public class MakeCharge {
     }
 
     public static int change(int amount, int[] coins) {
+        Arrays.sort(coins);
         return charge(amount, coins, 0);
+    }
+
+    public static int changeNew(int amount, int[] coins) {
+        int dp[] = new int[amount + 1];
+        // 设置起始状态
+        dp[0] = 1;
+        for (int coin : coins) {
+            // 记录每添加一种面额的零钱，总金额j的变化
+            for (int j = 1; j <= amount; j++) {
+                if (j >= coin) {
+                    // 在上一钟零钱状态的基础上增大
+                    // 例如对于总额5，当只有面额为1的零钱时，只有一种可能 5x1
+                    // 当加了面额为2的零钱时，除了原来的那一种可能外
+                    // 还加上了组合了两块钱的情况，而总额为5是在总额为3的基础上加上两块钱来的
+                    // 所以就加上此时总额为3的所有组合情况
+                    dp[j] = dp[j] + dp[j - coin];
+                }
+            }
+        }
+        return dp[amount];
+    }
+
+    public static int changeNew1(int amount, int[] coins) {
+        // 动态规划
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;
+        for (int coin : coins) {
+            for (int i = 0; i + coin <= amount; i++) {
+                dp[i + coin] += dp[i];
+            }
+        }
+        return dp[amount];
     }
 
     public static void main(String[] args) {
         int[] units = {1, 99};
         int total = 100;
-        System.out.println(String.format("target:%d  total:%d", total, change(total, units)));
+        System.out.println(String.format("target:%d  total:%d", total, changeNew1(total, units)));
     }
 }
