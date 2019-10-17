@@ -10,8 +10,11 @@ public class Main {
 //        String target = "%";
 //        System.out.println(target.replaceAll("%|_|/",""));
 
-        Date date = new Date();
-        System.out.println(date.getTime());
+//        Date date = new Date();
+//        System.out.println(date.getTime());
+
+        double target = 4;
+        System.out.println((int)target);
 
     }
 }
