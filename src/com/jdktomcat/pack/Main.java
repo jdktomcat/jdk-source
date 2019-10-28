@@ -7,14 +7,8 @@ import java.util.Date;
  */
 public class Main {
     public static void main(String[] args) {
-//        String target = "%";
-//        System.out.println(target.replaceAll("%|_|/",""));
-
-//        Date date = new Date();
-//        System.out.println(date.getTime());
-
-        double target = 4;
-        System.out.println((int)target);
+        String context = "收方客户拒收";
+        System.out.println(context.contains("拒收"));
 
     }
 }

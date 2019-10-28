@@ -41,11 +41,6 @@ class Solution {
         return true;
     }
 
-    public static void main(String[] args) {
-        int[] nums1 = {};
-        int[] nums2 = {2, 3};
-        System.out.println(findMedianSortedArrays(nums1, nums2));
-    }
 
     public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> dataMap = new HashMap<>();
@@ -89,5 +84,32 @@ class Solution {
             return num[(num.length - 1) / 2];
         }
         return (num[(num.length - 1) / 2] + num[(num.length - 1) / 2 + 1]) / 2.0;
+    }
+
+    public static String longestPalindrome(String s) {
+        int length = s.length();
+        if (length == 0) {
+            return "";
+        }
+        String target = "";
+        for (int index = 0; index < length; index++) {
+            String next = s.substring(index, index + 1);
+            if (length != 1 && index < length - 1) {
+                if (s.charAt(index) == s.charAt(length - 1)) {
+                    next += longestPalindrome(s.substring(index + 1, length - 1));
+                    next += s.substring(length - 1, length);
+                } else {
+                    next = longestPalindrome(s.substring(index, length - 1));
+                }
+            }
+            if (target.length() < next.length()) {
+                target = next;
+            }
+        }
+        return target;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(longestPalindrome("abcdefiedcj"));
     }
 }
