@@ -1,5 +1,8 @@
 package com.jdktomcat.pack.algorithm.leecode.medium;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 类描述：
  *
@@ -8,22 +11,26 @@ package com.jdktomcat.pack.algorithm.leecode.medium;
  */
 public class StringZProblem {
     public static String convert(String s, int numRows) {
-        int levelTotal = s.length() % numRows == 0 ? s.length() / numRows : s.length() / numRows + 1;
-        String[] targetArray = new String[numRows];
-        for (int level = 0; level < levelTotal; level++) {
-            boolean isVertical = level % 2 == 0;
-            for (int num = 0; num < numRows; num++) {
-                if(targetArray[num] == null){
-                    targetArray[num] = "";
-                }
-                if (isVertical) {
-                    targetArray[num] += s.charAt(level * (numRows - 1) + num);
-                } else {
-                    targetArray[num] += s.charAt((level + 1) * (numRows - 1) - num);
-                }
-            }
+        if (numRows < 2) {
+            return s;
         }
-        return "";
+        List<StringBuilder> rows = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            rows.add(new StringBuilder());
+        }
+        int i = 0, flag = -1;
+        for (char c : s.toCharArray()) {
+            rows.get(i).append(c);
+            if (i == 0 || i == numRows - 1) {
+                flag = -flag;
+            }
+            i += flag;
+        }
+        StringBuilder res = new StringBuilder();
+        for (StringBuilder row : rows) {
+            res.append(row);
+        }
+        return res.toString();
     }
 
     public static void main(String[] args) {
