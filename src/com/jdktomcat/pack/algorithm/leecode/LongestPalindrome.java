@@ -72,7 +72,7 @@ public class LongestPalindrome {
         for (int i = n - 1; i >= 0; i--) {
             for (int j = n - 1; j >= i; j--) {
                 booleans[j] = s.charAt(i) == s.charAt(j) && (j - i < 3 || booleans[j - 1]);
-                if (booleans[j] && j - i + 1 > res.length()) {
+                if (booleans[j] && (j - i + 1 > res.length())) {
                     res = s.substring(i, j + 1);
                 }
             }
@@ -81,6 +81,6 @@ public class LongestPalindrome {
     }
 
     public static void main(String[] args) {
-        System.out.println(longestPalindrome1("abcdefedcj"));
+        System.out.println(longestPalindrome("abcdefedcj"));
     }
 }
