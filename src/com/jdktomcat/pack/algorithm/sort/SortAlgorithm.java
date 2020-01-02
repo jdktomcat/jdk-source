@@ -242,27 +242,27 @@ public class SortAlgorithm {
     /**
      * 快速排序
      *
-     * @param datas
+     * @param data
      */
-    public static void quickSort(DataWrap[] datas) {
+    public static void quickSort(DataWrap[] data) {
         System.out.println("快速排序开始:......");
-        subSort(datas, 0, datas.length - 1);
+        subSort(data, 0, data.length - 1);
         System.out.println("快速排序结束:......");
-        System.out.println(Arrays.toString(datas));
+        System.out.println(Arrays.toString(data));
     }
 
     /**
      * 递归排序方法体
      *
-     * @param datas 目标数据
+     * @param data  目标数据
      * @param start 起始位置
      * @param end   终点位置
      */
-    private static void subSort(DataWrap[] datas, int start, int end) {
+    private static void subSort(DataWrap[] data, int start, int end) {
         // 判断位置大小
         if (start < end) {
             // 记录起始数据,标准
-            DataWrap dataWrap = datas[start];
+            DataWrap dataWrap = data[start];
             // 记录起始索引
             int i = start;
             // 记录终点索引
@@ -270,28 +270,24 @@ public class SortAlgorithm {
             // 循环
             while (true) {
                 // 循环正向寻找从起始位置第一个小于起始数据的
-                while (i < end && datas[++i].compareTo(dataWrap) <= 0) {
-                }
-                ;
+                while (i < end && data[++i].compareTo(dataWrap) <= 0) ;
                 // 循环反向寻找从终点位置第一个大于起始数据的
-                while (j > start && datas[--j].compareTo(dataWrap) >= 0) {
-                }
-                ;
+                while (j > start && data[--j].compareTo(dataWrap) >= 0) ;
                 // 判断找到目标之后比较i,j值大小
                 if (i < j) {
                     // 当i小于j时,交换
-                    swap(datas, i, j);
+                    swap(data, i, j);
                 } else {
                     // 否则跳出循环
                     break;
                 }
             }
             // 交换起始位置与j位置数据
-            swap(datas, start, j);
+            swap(data, start, j);
             // 再递归缩小排序范围,左排序
-            subSort(datas, start, j - 1);
+            subSort(data, start, j - 1);
             // 再递归缩小排序范围,右排序
-            subSort(datas, j + 1, end);
+            subSort(data, j + 1, end);
         }
     }
 
