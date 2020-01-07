@@ -82,4 +82,9 @@ public class DataWrap implements Comparable<DataWrap> {
     public int compareTo(@NotNull DataWrap o) {
         return this.getValue() - o.value;
     }
+
+    @Override
+    public String toString() {
+        return "" + value;
+    }
 }
