@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.algorithm.leecode.hard;
+package com.jdktomcat.pack.algorithm.leetcode.hard;
 
 /**
  * 类描述：链表合并

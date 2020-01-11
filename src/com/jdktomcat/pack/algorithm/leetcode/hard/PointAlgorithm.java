@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.algorithm.leecode.hard;
+package com.jdktomcat.pack.algorithm.leetcode.hard;
 
 public class PointAlgorithm {
 	private static final Integer X_MAX = 100;
