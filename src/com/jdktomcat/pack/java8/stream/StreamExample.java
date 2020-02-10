@@ -22,11 +22,8 @@ public class StreamExample {
         stringList.add("bbb2");
         stringList.add("ddd1");
         stringList.stream().filter((s) -> s.startsWith("a")).forEach(System.out::println);
-
         //测试 Reduce (规约)操作
-        Optional<String> reduced =
-                stringList.stream().sorted().reduce((s1, s2) -> s1 + "#" + s2);
-
+        Optional<String> reduced = stringList.stream().sorted().reduce((s1, s2) -> s1 + "#" + s2);
         reduced.ifPresent(System.out::println);
     }
 }
