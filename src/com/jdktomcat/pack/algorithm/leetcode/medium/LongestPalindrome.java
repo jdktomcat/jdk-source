@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.algorithm.leecode.medium;
+package com.jdktomcat.pack.algorithm.leetcode.medium;
 
 /**
  * 类描述：字符串最长回文子串

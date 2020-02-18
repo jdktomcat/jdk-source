@@ -36,7 +36,7 @@ public class SortAlgorithm {
         };
         System.out.println("目标数据:");
         System.out.println(Arrays.toString(arrays));
-        SortAlgorithm.mergeSort(arrays);
+        SortAlgorithm.quickSort(arrays);
     }
 
     /**
@@ -50,7 +50,7 @@ public class SortAlgorithm {
         // 外层循环遍历所有数据项
         for (int i = 0; i < arrays.length; i++) {
             // 创建大顶堆,也就是完全二叉树,以其最后子节点
-            buildMaxdHeap(arrays, arrays.length - 1 - i);
+            buildMaxHeap(arrays, arrays.length - 1 - i);
             // 交换最顶层与最后位数据
             swap(arrays, 0, arrays.length - 1 - i);
             // 打印排序过程
@@ -67,7 +67,7 @@ public class SortAlgorithm {
      * @param arrays    目标数据
      * @param lastIndex 最后的索引
      */
-    private static void buildMaxdHeap(DataWrap[] arrays, int lastIndex) {
+    private static void buildMaxHeap(DataWrap[] arrays, int lastIndex) {
         // 层循环,其中变量i存储层数,也即树的深度
         for (int i = (lastIndex - 1) / 2; i >= 0; i--) {
             // 临时变量k
@@ -114,9 +114,9 @@ public class SortAlgorithm {
     /**
      * 选择排序算法
      *
-     * @param datas
+     * @param data
      */
-    public static void selectSort(DataWrap[] datas) {
+    public static void selectSort(DataWrap[] data) {
         System.out.println("选择排序开始......");
 
         // 记录循环次数
@@ -124,15 +124,15 @@ public class SortAlgorithm {
         // 记录交换次数
         int swapNum = 0;
         // 目标数据集的长度
-        int length = datas.length;
+        int length = data.length;
         // 外层循环遍历
         for (int i = 0; i < length - 1; i++) {
             // 内层循环遍历
             for (int j = i + 1; j < length; j++) {
                 // 比较外层循环与内层循环指向的数据大小
-                if (datas[i].compareTo(datas[j]) > 0) {
+                if (data[i].compareTo(data[j]) > 0) {
                     // 交换数据 从而保证每次外层循环总能得到内层循环中的最小值
-                    swap(datas, i, j);
+                    swap(data, i, j);
                     // 交换次数增加
                     swapNum++;
                 }
@@ -140,11 +140,11 @@ public class SortAlgorithm {
                 loopNum++;
             }
             // 每次循环打出结果
-            System.out.println(Arrays.toString(datas));
+            System.out.println(Arrays.toString(data));
         }
         // 排序结果及分析
         System.out.println("选择排序结束......");
-        System.out.println(Arrays.toString(datas));
+        System.out.println(Arrays.toString(data));
         System.out.println("循环次数:" + loopNum);
         System.out.println("交换次数:" + swapNum);
     }
@@ -152,9 +152,9 @@ public class SortAlgorithm {
     /**
      * 选择排序改进版,通过减少交换次数提升性能
      *
-     * @param datas
+     * @param data
      */
-    public static void selectSort2(DataWrap[] datas) {
+    public static void selectSort2(DataWrap[] data) {
         System.out.println("选择排序改进版开始......");
 
         // 记录循环次数
@@ -163,7 +163,7 @@ public class SortAlgorithm {
         int swapNum = 0;
 
         // 目标数据长度
-        int length = datas.length;
+        int length = data.length;
         // 外层循环
         for (int i = 0; i < length - 1; i++) {
             // 记录最小值的索引
@@ -171,7 +171,7 @@ public class SortAlgorithm {
             // 内层循环
             for (int j = i + 1; j < length; j++) {
                 // 比较外层循环指引值与内层循环指引值
-                if (datas[minIndex].compareTo(datas[j]) > 0) {
+                if (data[minIndex].compareTo(data[j]) > 0) {
                     // 记录最小值的索引 此处只需要记录其索引即可,无需交换,临时的,不是最小值
                     minIndex = j;
                 }
@@ -180,17 +180,17 @@ public class SortAlgorithm {
             // 判断最小值索引与外层循环索引是否相同,如果相同则无需交换
             if (minIndex != i) {
                 // 交换值
-                swap(datas, i, minIndex);
+                swap(data, i, minIndex);
                 // 交换次数增张
                 swapNum++;
             }
             // 打印排序过程
-            System.out.println(Arrays.toString(datas));
+            System.out.println(Arrays.toString(data));
         }
 
         // 打印结果即对其分析
         System.out.println("选择排序改进版结束......");
-        System.out.println(Arrays.toString(datas));
+        System.out.println(Arrays.toString(data));
         System.out.println("循环次数:" + loopNum);
         System.out.println("交换次数:" + swapNum);
     }
@@ -198,9 +198,9 @@ public class SortAlgorithm {
     /**
      * 冒泡排序
      *
-     * @param datas
+     * @param data
      */
-    public static void bubbleSort(DataWrap[] datas) {
+    public static void bubbleSort(DataWrap[] data) {
         System.out.println("冒泡排序开始:......");
 
         // 记录循环次数
@@ -209,7 +209,7 @@ public class SortAlgorithm {
         int swapNum = 0;
 
         // 目标数据长度
-        int length = datas.length;
+        int length = data.length;
         // 外层循环
         for (int i = 0; i < length - 1; i++) {
             // 排序完成标识
@@ -217,9 +217,9 @@ public class SortAlgorithm {
             // 内层循环
             for (int j = 0; j < length - 1 - i; j++) {
                 // 比较相邻数据,如果前者大于后者的话
-                if (datas[j].compareTo(datas[j + 1]) > 0) {
+                if (data[j].compareTo(data[j + 1]) > 0) {
                     // 交换
-                    swap(datas, j, j + 1);
+                    swap(data, j, j + 1);
                     // 交换次数增1
                     swapNum++;
                     // 变换完成标识
@@ -227,14 +227,14 @@ public class SortAlgorithm {
                 }
                 loopNum++;
             }
-            System.out.println(Arrays.toString(datas));
+            System.out.println(Arrays.toString(data));
             // 判断排序是否完成
             if (!swapFlg) {
                 break;
             }
         }
         System.out.println("冒泡排序结束:......");
-        System.out.println(Arrays.toString(datas));
+        System.out.println(Arrays.toString(data));
         System.out.println("循环次数:" + loopNum);
         System.out.println("交换次数:" + swapNum);
     }
