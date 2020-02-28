@@ -10,12 +10,18 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ThreadTest {
 
+    /**
+     * 共享状态值
+     */
     public volatile static AtomicInteger state = new AtomicInteger(1);
 
+    /**
+     * 奇数线程
+     */
     static class OldThread extends Thread {
         @Override
         public void run() {
-            while (state.get() < 1000) {
+            while (state.get() < 10) {
                 if(state.get() % 2 != 0){
                     System.out.println(state.get());
                     state.incrementAndGet();
@@ -24,10 +30,13 @@ public class ThreadTest {
         }
     }
 
+    /**
+     * 偶数打印线程
+     */
     static class EvenThread extends Thread {
         @Override
         public void run() {
-            while (state.get() < 1000) {
+            while (state.get() < 10) {
                 if(state.get() % 2 == 0){
                     System.out.println(state.get());
                     state.incrementAndGet();
