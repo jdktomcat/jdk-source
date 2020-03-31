@@ -1,18 +1,15 @@
 package com.jdktomcat.pack;
 
-import java.util.Date;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author Administrator
  */
 public class Main {
-    public static void main(String[] args) {
-        String context = "收方客户拒收";
-        System.out.println(context.contains("拒收"));
-//        Integer test = 5011435522;
-        System.out.println(System.currentTimeMillis());
-        System.out.print(new Date().getTime());
-
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        String av = "5.0.2";
+        String[] dataArray = av.split("\\.");
+        System.out.println(dataArray.length);
     }
 }
 
