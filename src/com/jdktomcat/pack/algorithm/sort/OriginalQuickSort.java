@@ -1,6 +1,11 @@
 package com.jdktomcat.pack.algorithm.sort;
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * 类描述：
@@ -16,7 +21,7 @@ public class OriginalQuickSort {
      * @param start 开始索引
      * @param end   结束索引
      */
-    public static void quickSort(int[] array, int start, int end) {
+    public static void quickSort(Integer[] array, int start, int end) {
         if (start < end) {
             int target = array[start];
             int i = start;
@@ -36,11 +41,24 @@ public class OriginalQuickSort {
         }
     }
 
-    public static void main(String[] args) {
-        int[] array = new int[]{23, 12, 1, 456, 67, 8, 9, 879, 32, 18, 101, 74, 99, 544, 754, 1023};
-        long startTimeOriginal = System.nanoTime();
+    public static void main(String[] args) throws FileNotFoundException {
+        List<Integer> dataList = new ArrayList<>(100000);
+        String filePath = "C:\\Users\\Administrator\\Desktop\\number.txt";
+        Scanner scanner = new Scanner(new File(filePath));
+        while (scanner.hasNext()) {
+            dataList.add(Integer.parseInt(scanner.next().trim()));
+        }
+        scanner.close();
+        Integer[] array = dataList.toArray(new Integer[0]);
+        long startTimeOriginal = System.currentTimeMillis();
         quickSort(array, 0, array.length - 1);
-        System.out.println(String.format("原始快速排序完成，耗时：%d", (System.nanoTime() - startTimeOriginal)));
-        System.out.println(Arrays.toString(array));
+        System.out.println(String.format("原始快速排序完成，耗时：%d ms", (System.currentTimeMillis() - startTimeOriginal)));
+        String targetPath = "C:\\Users\\Administrator\\Desktop\\sorted-o.txt";
+        PrintWriter writer = new PrintWriter(targetPath);
+        for (int i = 0; i < array.length; i++) {
+            writer.println(array[i]);
+        }
+        writer.flush();
+        writer.close();
     }
 }

@@ -15,7 +15,7 @@ public class DataWrapUtil {
      * @param index1 下标1
      * @param index2 下标2
      */
-    public static void swap(int[] array, int index1, int index2) {
+    public static void swap(Integer[] array, int index1, int index2) {
         int temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;

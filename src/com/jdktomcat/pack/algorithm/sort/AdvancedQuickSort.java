@@ -1,6 +1,11 @@
 package com.jdktomcat.pack.algorithm.sort;
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
@@ -9,13 +14,13 @@ import java.util.concurrent.RecursiveAction;
  */
 public class AdvancedQuickSort extends RecursiveAction {
 
-    private int[] array;
+    private Integer[] array;
 
     private int start;
 
     private int end;
 
-    public AdvancedQuickSort(int[] array, int start, int end) {
+    public AdvancedQuickSort(Integer[] array, int start, int end) {
         this.array = array;
         this.start = start;
         this.end = end;
@@ -48,12 +53,28 @@ public class AdvancedQuickSort extends RecursiveAction {
             advancedQuickSortRight.join();
         }
     }
-    public static void main(String[] args) {
-        int[] array = new int[]{23, 12, 1, 456, 67, 8, 9, 879, 32, 18, 101, 74, 99, 544, 754, 1023};
-        ForkJoinPool pool = new ForkJoinPool();
-        long startTimeAdvanced = System.nanoTime();
+
+    public static void main(String[] args) throws FileNotFoundException {
+        List<Integer> dataList = new ArrayList<>(100000);
+        String filePath = "C:\\Users\\Administrator\\Desktop\\number.txt";
+        Scanner scanner = new Scanner(new File(filePath));
+        while (scanner.hasNext()) {
+            dataList.add(Integer.parseInt(scanner.next().trim()));
+        }
+        scanner.close();
+        Integer[] array = dataList.toArray(new Integer[0]);
+        ForkJoinPool pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
+        long startTimeAdvanced = System.currentTimeMillis();
         pool.invoke(new AdvancedQuickSort(array, 0, array.length - 1));
-        System.out.println(String.format("高级并行快速排序完成，耗时：%d", (System.nanoTime() - startTimeAdvanced)));
-        System.out.println(Arrays.toString(array));
+        System.out.println(String.format("高级并行快速排序完成，耗时：%d ms", (System.currentTimeMillis() - startTimeAdvanced)));
+
+        String targetPath = "C:\\Users\\Administrator\\Desktop\\sorted-a.txt";
+        PrintWriter writer = new PrintWriter(targetPath);
+        for (int i = 0; i < array.length; i++) {
+            writer.println(array[i]);
+        }
+        writer.flush();
+        writer.close();
+
     }
 }

@@ -12,7 +12,7 @@ import java.util.concurrent.ForkJoinPool;
 public class Runner {
 
     public static void main(String[] args) {
-        int[] array = new int[]{23, 12, 1, 456, 67, 8, 9, 879, 32, 18, 101, 74, 99, 544, 754, 1023};
+        Integer[] array = new Integer[]{23, 12, 1, 456, 67, 8, 9, 879, 32, 18, 101, 74, 99, 544, 754, 1023};
         long startTimeOriginal = System.currentTimeMillis();
         OriginalQuickSort.quickSort(array, 0, array.length - 1);
         System.out.println(String.format("原始快速排序完成，耗时：%d ms", (System.currentTimeMillis() - startTimeOriginal)));
