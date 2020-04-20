@@ -1,0 +1,46 @@
+package com.jdktomcat.pack.algorithm.sort;
+
+import java.util.Arrays;
+
+public class QuickSort {
+
+    /**
+     * 交换
+     *
+     * @param array  数组
+     * @param index1 下标1
+     * @param index2 下标2
+     */
+    public static void swap(int[] array, int index1, int index2) {
+        int temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
+    private static void quickSort(int[] array, int start, int end) {
+        if (start < end) {
+            int target = array[start];
+            int leftIndex = start;
+            int rightIndex = end + 1;
+            while (true) {
+                while (leftIndex < end && array[++leftIndex] <= target) ;
+                while (rightIndex > start && array[--rightIndex] >= target) ;
+                if (leftIndex >= rightIndex) {
+                    break;
+                } else {
+                    swap(array, leftIndex, rightIndex);
+                }
+            }
+            swap(array, start, rightIndex);
+            quickSort(array, start, rightIndex - 1);
+            quickSort(array, rightIndex + 1, end);
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] array = new int[]{10, 9, 4, 24, 234, 567, 0};
+        quickSort(array, 0, array.length - 1);
+        System.out.println(Arrays.toString(array));
+    }
+
+}
