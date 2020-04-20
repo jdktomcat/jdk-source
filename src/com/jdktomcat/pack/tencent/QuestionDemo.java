@@ -7,7 +7,7 @@ import java.util.List;
 public class QuestionDemo {
 
 
-    static Integer find(List<Integer> list) {
+    private static Integer find(List<Integer> list) {
         if (list != null && list.size() != 0) {
             int midIndex = list.size() / 2;
             if (midIndex != 0 && midIndex < list.size() - 1) {
@@ -26,7 +26,7 @@ public class QuestionDemo {
         return 0;
     }
 
-    static List<Integer> merge(List<List<Integer>> lists) {
+    private static List<Integer> merge(List<List<Integer>> lists) {
         List<Integer> targetList = new ArrayList<>();
         boolean isContinue = true;
         while (isContinue) {
@@ -43,7 +43,8 @@ public class QuestionDemo {
             }
             if (hasNumber) {
                 targetList.add(target);
-                lists.get(index).remove(0);
+                List<Integer> inList = lists.get(index);
+                inList.remove(0);
                 continue;
             }
             isContinue = false;
@@ -51,9 +52,42 @@ public class QuestionDemo {
         return targetList;
     }
 
+    private static List<Integer> merge(List<Integer> targetList, List<Integer> sourceList) {
+        int indexTarget = 0;
+        int indexSource = 0;
+        List<Integer> temp = new ArrayList<>();
+        while (indexTarget < targetList.size() && indexSource < sourceList.size()) {
+            temp.add(targetList.get(indexTarget) < sourceList.get(indexSource) ? targetList.get(indexTarget++) : sourceList.get(indexSource++));
+        }
+        if (indexTarget < targetList.size()) {
+            temp.addAll(targetList.subList(indexTarget, targetList.size()));
+        }
+        if (indexSource < sourceList.size()) {
+            temp.addAll(sourceList.subList(indexSource, sourceList.size()));
+        }
+        return temp;
+    }
+
+    private static List<Integer> merge2(List<List<Integer>> lists) {
+        List<Integer> targetList = new ArrayList<>();
+        for (List<Integer> list : lists) {
+            targetList = merge(targetList, list);
+        }
+        return targetList;
+    }
+
+
     public static void main(String[] args) {
-        Integer[] array = new Integer[]{-20, -13, -4, 6, 77, 200};
-        List<Integer> list = Arrays.asList(array);
-        System.out.println(find(list));
+        Integer[] array1 = new Integer[]{-20, -13, -4, 6, 77, 200};
+        Integer[] array2 = new Integer[]{-21, -12, -3, 7, 78, 201};
+        Integer[] array3 = new Integer[]{-22, -14, -5, 8, 79, 202};
+        Integer[] array4 = new Integer[]{-23, -15, -2, 9, 80, 203};
+        List<List<Integer>> dataList = new ArrayList<>();
+        dataList.add(new ArrayList<>(Arrays.asList(array1)));
+        dataList.add(new ArrayList<>(Arrays.asList(array2)));
+        dataList.add(new ArrayList<>(Arrays.asList(array3)));
+        dataList.add(new ArrayList<>(Arrays.asList(array4)));
+        System.out.println(merge2(dataList));
+
     }
 }
