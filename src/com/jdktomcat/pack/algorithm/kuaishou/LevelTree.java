@@ -20,6 +20,11 @@ public class LevelTree {
 
     }
 
+    /**
+     * ceshi
+     * @param root
+     * @return
+     */
     private static List<List<Node>> visitLevel(Node root) {
         List<List<Node>> resultList = new ArrayList<>();
         if (root != null) {
