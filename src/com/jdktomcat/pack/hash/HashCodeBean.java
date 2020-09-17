@@ -1,6 +1,6 @@
 package com.jdktomcat.pack.hash;
 
-import org.apache.commons.lang.math.RandomUtils;
+//import org.apache.commons.lang.math.RandomUtils;
 
 /**
  * 测试hash
@@ -32,9 +32,9 @@ public class HashCodeBean {
 
 
 
-    public static void main(String[] args) {
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(RandomUtils.nextInt(25));
-        }
-    }
+//    public static void main(String[] args) {
+//        for (int i = 0; i < 1000; i++) {
+//            System.out.println(RandomUtils.nextInt(25));
+//        }
+//    }
 }
