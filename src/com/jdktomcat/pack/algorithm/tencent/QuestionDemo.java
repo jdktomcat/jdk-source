@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.tencent;
+package com.jdktomcat.pack.algorithm.tencent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
