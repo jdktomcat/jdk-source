@@ -1,7 +1,5 @@
 package com.jdktomcat.pack.algorithm.ali;
 
-import java.util.Arrays;
-
 public class AliQuestion {
 
     public static int minSumSubArray(int[] dataArray, int start, int end) {
@@ -24,7 +22,7 @@ public class AliQuestion {
                 min -= dataArray[end - 1];
                 subMin = minSumSubArray(dataArray, start + 1, end - 1);
             }
-            min = (subMin < min ? subMin : min);
+            min = Math.min(subMin, min);
         }
         return min;
     }
