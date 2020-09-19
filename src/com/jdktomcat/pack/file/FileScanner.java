@@ -1,7 +1,6 @@
 package com.jdktomcat.pack.file;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -22,7 +21,7 @@ public class FileScanner {
         return imeiSet;
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
 //        String myDataFile = "C:\\Users\\Administrator\\Desktop\\data\\hive_imei.csv";
 //        String theirDataFile = "C:\\Users\\Administrator\\Desktop\\data\\imei-vivo-0303.log";
 //        Set<String> myData = getFileSet(myDataFile);
@@ -55,8 +54,17 @@ public class FileScanner {
 //            System.out.println(imei);
 //        }
 
+//        String filePath = "C:\\Users\\Administrator\\Desktop\\imei\\imei.txt";
+//        Set<String> myData = getFileSet(filePath);
+//        System.out.println("总数：" + myData.size());
+
+
         String filePath = "C:\\Users\\Administrator\\Desktop\\imei\\imei.txt";
-        Set<String> myData = getFileSet(filePath);
-        System.out.println("总数：" + myData.size());
+        File file = new File(filePath);
+        if(!file.exists()){
+            file.createNewFile();
+        }
+        InputStream inputStream  = new FileInputStream(file);
+
     }
 }
