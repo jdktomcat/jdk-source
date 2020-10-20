@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.algorithm.kuaishou;
+package com.jdktomcat.pack.algorithm.leetcode.hard;
 
 import java.util.ArrayList;
 import java.util.List;

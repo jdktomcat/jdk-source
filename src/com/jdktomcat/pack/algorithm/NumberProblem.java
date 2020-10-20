@@ -5,7 +5,6 @@ import com.jdktomcat.pack.util.jdk6.HashMap;
 import java.util.Map;
 
 public class NumberProblem {
-
     private static int count(int[] data) {
         Map<Integer, Integer> dataMap = new HashMap<>(data.length);
         Map<Integer, Integer> tempMap = new HashMap<>(data.length);

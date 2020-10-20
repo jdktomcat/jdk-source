@@ -1,6 +1,7 @@
 package com.jdktomcat.pack.java8.stream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -116,10 +117,14 @@ public class StreamExample {
         }
         System.out.println("传统串行执行耗时：" + (System.currentTimeMillis() - start4));
         System.out.println("传统串行执行的大小：" + list4.size());
+
+
     }
 
     public static void main(String[] args) {
+        int[] dataArray = new int[]{5, 7, 3, 1};
+        System.out.println(Arrays.toString(Arrays.stream(dataArray).map(num -> num + 1).toArray()));
 //        concurrentFun();
-        parallelTest();
+//        parallelTest();
     }
 }
