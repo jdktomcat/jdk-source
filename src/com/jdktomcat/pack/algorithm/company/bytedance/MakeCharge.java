@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.algorithm.bytedance;
+package com.jdktomcat.pack.algorithm.company.bytedance;
 
 import java.util.Arrays;
 

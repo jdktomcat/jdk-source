@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.algorithm.tencent;
+package com.jdktomcat.pack.algorithm.company.tencent;
 
 import java.util.Random;
 

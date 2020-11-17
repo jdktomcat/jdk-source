@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.algorithm.ali;
+package com.jdktomcat.pack.algorithm.company.ali;
 
 public class AliQuestion {
 

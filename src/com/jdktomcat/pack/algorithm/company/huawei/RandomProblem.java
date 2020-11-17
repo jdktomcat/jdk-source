@@ -1,4 +1,4 @@
-package com.jdktomcat.pack.algorithm.huawei;
+package com.jdktomcat.pack.algorithm.company.huawei;
 
 import java.util.Scanner;
 import java.util.TreeSet;
