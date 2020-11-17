@@ -1,5 +1,7 @@
 package com.jdktomcat.pack.thread;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 类描述：线程测试
  *
@@ -8,15 +10,49 @@ package com.jdktomcat.pack.thread;
  */
 public class ThreadTest {
 
-    public static void main(String[] args) throws InterruptedException {
-        Object object = new Object();
-        for (int i = 0; i < 15; i++) {
-            PersonalThread personalThread = new PersonalThread("线程-" + i, object);
-            personalThread.start();
-        }
-        Thread.sleep(1000);
-        synchronized (object) {
-            object.notifyAll();
+    /**
+     * 共享状态值
+     */
+    public volatile static AtomicInteger state = new AtomicInteger(1);
+
+    /**
+     * 奇数线程
+     */
+    static class OldThread extends Thread {
+        @Override
+        public void run() {
+            while (state.get() < 10) {
+                if(state.get() % 2 != 0){
+                    System.out.println(state.get());
+                    state.incrementAndGet();
+                }
+            }
         }
     }
+
+    /**
+     * 偶数打印线程
+     */
+    static class EvenThread extends Thread {
+        @Override
+        public void run() {
+            while (state.get() < 10) {
+                if(state.get() % 2 == 0){
+                    System.out.println(state.get());
+                    state.incrementAndGet();
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        OldThread oldThread = new OldThread();
+        EvenThread evenThread = new EvenThread();
+        oldThread.start();
+        evenThread.start();
+        oldThread.join();
+        evenThread.join();
+    }
 }
+
+
