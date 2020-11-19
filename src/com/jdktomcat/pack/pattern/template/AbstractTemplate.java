@@ -9,17 +9,17 @@ public abstract class AbstractTemplate {
         serviceEvaluation();
     }
 
-    public void checkNum() {
+    private void checkNum() {
         System.out.println("check number......");
     }
 
-    public void queueUp() {
+    private void queueUp() {
         System.out.println("queue up......");
     }
 
-    public abstract void business();
+    protected abstract void business();
 
-    public void serviceEvaluation() {
+    private void serviceEvaluation() {
         System.out.println("business finished,service evaluation......");
     }
 }
