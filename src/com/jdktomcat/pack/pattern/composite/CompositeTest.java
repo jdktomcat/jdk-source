@@ -7,6 +7,5 @@ public class CompositeTest {
         TreeNode nodeB = new TreeNode("B");
         nodeA.add(nodeB);
         System.out.println(nodeA);
-
     }
 }
