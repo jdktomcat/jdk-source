@@ -1,7 +1,5 @@
 package com.jdktomcat.pack.pattern.strategy.pro;
 
-import com.jdktomcat.pack.pattern.strategy.pro.Prize;
-
 public class Initiator {
 
     private Prize prize;
