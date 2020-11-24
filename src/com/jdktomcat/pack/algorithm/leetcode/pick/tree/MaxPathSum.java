@@ -2,17 +2,17 @@ package com.jdktomcat.pack.algorithm.leetcode.pick.tree;
 
 public class MaxPathSum {
 
-    private static boolean isValidBST(TreeNode root, int target, boolean flag, boolean leftFlag) {
+    private static boolean isValidBST(TreeNode root, int target, boolean isRoot, boolean leftFlag) {
         boolean isValid = true;
-        if (root.left != null) {
-            if (flag) {
+        if (isValid && root.left != null) {
+            if (isRoot) {
                 isValid = (root.val > root.left.val) && isValidBST(root.left, root.val, false, true);
             } else {
-                isValid = leftFlag ? (target < root.left.val) : true && (root.val > root.left.val) && isValidBST(root.left, root.val, false, true);
+                isValid = leftFlag ? true : (target < root.left.val) && (root.val > root.left.val) && isValidBST(root.left, root.val, false, true);
             }
         }
-        if (root.right != null) {
-            if (flag) {
+        if (isValid && root.right != null) {
+            if (isRoot) {
                 isValid = (root.val < root.right.val) && isValidBST(root.right, root.val, false, false);
             } else {
                 isValid = leftFlag ? (target > root.right.val) : true && (root.val < root.right.val) && isValidBST(root.right, root.val, false, false);
@@ -59,13 +59,13 @@ public class MaxPathSum {
     }
 
     public static void main(String[] args) {
-        TreeNode root = new TreeNode(3);
-        TreeNode node2 = new TreeNode(1);
-        TreeNode node3 = new TreeNode(5);
-        TreeNode node4 = new TreeNode(0);
-        TreeNode node5 = new TreeNode(2);
-        TreeNode node6 = new TreeNode(4);
-        TreeNode node7 = new TreeNode(6);
+//        TreeNode root = new TreeNode(10);
+//        TreeNode node2 = new TreeNode(5);
+//        TreeNode node3 = new TreeNode(15);
+//        TreeNode node4 = new TreeNode(6);
+//        TreeNode node5 = new TreeNode(20);
+//        TreeNode node6 = new TreeNode(4);
+//        TreeNode node7 = new TreeNode(6);
 
 //        TreeNode node4 = new TreeNode(11);
 //        TreeNode node5 = new TreeNode(13);
@@ -85,16 +85,11 @@ public class MaxPathSum {
 //        node4.right = node9;
 //
 //        node6.right = node7;
-        root.left = node2;
-        root.right = node3;
-
-        node3.left = node4;
-        node3.right = node5;
-
-        node2.left = node6;
-        node2.right = node7;
-
-        System.out.println(isValidBST(root));
-
+//        root.left = node2;
+//        root.right = node3;
+//
+//        node3.left = node4;
+//        node3.right = node5;
+        System.out.println(isValidBST(TreeTool.generateTree(new Integer[]{3, 1, 5, 0, 2, 4, 6, null, null, null, 3})));
     }
 }
