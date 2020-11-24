@@ -1,32 +1,59 @@
 package com.jdktomcat.pack.algorithm.leetcode.pick.tree;
 
+import java.util.List;
+
 public class MaxPathSum {
 
-    private static boolean isValidBST(TreeNode root, int target, boolean isRoot, boolean leftFlag) {
-        boolean isValid = true;
-        if (isValid && root.left != null) {
-            if (isRoot) {
-                isValid = (root.val > root.left.val) && isValidBST(root.left, root.val, false, true);
-            } else {
-                isValid = leftFlag ? true : (target < root.left.val) && (root.val > root.left.val) && isValidBST(root.left, root.val, false, true);
-            }
-        }
-        if (isValid && root.right != null) {
-            if (isRoot) {
-                isValid = (root.val < root.right.val) && isValidBST(root.right, root.val, false, false);
-            } else {
-                isValid = leftFlag ? (target > root.right.val) : true && (root.val < root.right.val) && isValidBST(root.right, root.val, false, false);
-            }
+    static long target = Long.MIN_VALUE;
 
+
+    private static void leftTraversal(TreeNode root, List<TreeNode> nodeList) {
+        if (root.left != null) {
+            leftTraversal(root.left, nodeList);
         }
-        return isValid;
+        nodeList.add(root);
+        if (root.right != null) {
+            leftTraversal(root.right, nodeList);
+        }
     }
 
     public static boolean isValidBST(TreeNode root) {
+//        boolean flag = true;
+//        if (root != null) {
+//            if (root.left != null) {
+//                flag = isValidBST(root.left);
+//            }
+//            if (flag && root.val > target) {
+//                target = root.val;
+//                if (root.right != null) {
+//                    flag = isValidBST(root.right);
+//                }
+//            } else {
+//                flag = false;
+//            }
+//        }
+//        return flag;
         if (root == null) {
             return true;
         }
-        return isValidBST(root, root.val, true, false);
+        if (root.left != null) {
+            boolean flag = isValidBST(root.left);
+            if (!flag) {
+                return false;
+            }
+        }
+        if (root.val > target) {
+            target = root.val;
+            if (root.right != null) {
+                boolean flag = isValidBST(root.right);
+                if (!flag) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 
 
@@ -90,6 +117,6 @@ public class MaxPathSum {
 //
 //        node3.left = node4;
 //        node3.right = node5;
-        System.out.println(isValidBST(TreeTool.generateTree(new Integer[]{3, 1, 5, 0, 2, 4, 6, null, null, null, 3})));
+        System.out.println(isValidBST(TreeTool.generateTree(new Integer[]{10, 5, 15, null, null, 6, 20})));
     }
 }
