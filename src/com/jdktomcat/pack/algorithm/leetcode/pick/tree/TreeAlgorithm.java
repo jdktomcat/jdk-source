@@ -2,7 +2,7 @@ package com.jdktomcat.pack.algorithm.leetcode.pick.tree;
 
 import java.util.List;
 
-public class MaxPathSum {
+public class TreeAlgorithm {
 
     static long target = Long.MIN_VALUE;
 
