@@ -45,10 +45,7 @@ public class TreeAlgorithm {
         if (root.val > target) {
             target = root.val;
             if (root.right != null) {
-                boolean flag = isValidBST(root.right);
-                if (!flag) {
-                    return false;
-                }
+                return isValidBST(root.right);
             }
         } else {
             return false;
