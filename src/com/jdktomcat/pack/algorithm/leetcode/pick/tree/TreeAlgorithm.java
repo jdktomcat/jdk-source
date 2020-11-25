@@ -1,5 +1,7 @@
 package com.jdktomcat.pack.algorithm.leetcode.pick.tree;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TreeAlgorithm {
@@ -82,7 +84,7 @@ public class TreeAlgorithm {
         return max;
     }
 
-//    static int MAX_PATH = Integer.MIN_VALUE;
+    //    static int MAX_PATH = Integer.MIN_VALUE;
 //
 //    public static int maxPathSumNew(TreeNode root) {
 ////        int max = maxDeep(root, true);
@@ -98,6 +100,41 @@ public class TreeAlgorithm {
 ////
 ////        }
 //    }
+
+
+    public static List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<TreeNode>> levelNodeList = new ArrayList<>();
+        if (root != null) {
+            levelNodeList.add(Collections.singletonList(root));
+            int level = 0;
+            while (true) {
+                List<TreeNode> levelNodes = levelNodeList.get(level);
+                if (levelNodes == null || levelNodes.size() == 0) {
+                    break;
+                }
+                List<TreeNode> nextLevelNodes = new ArrayList<>();
+                for (TreeNode treeNode : levelNodes) {
+                    if (treeNode.left != null) {
+                        nextLevelNodes.add(treeNode.left);
+                    }
+                    if (treeNode.right != null) {
+                        nextLevelNodes.add(treeNode.right);
+                    }
+                }
+                levelNodeList.add(nextLevelNodes);
+                level++;
+            }
+        }
+        List<List<Integer>> levelDataList = new ArrayList<>();
+        for (List<TreeNode> levelNodes : levelNodeList) {
+            List<Integer> levelData = new ArrayList<>(levelNodes.size());
+            for (TreeNode treeNode : levelNodes) {
+                levelData.add(treeNode.val);
+            }
+            levelDataList.add(levelData);
+        }
+        return levelDataList;
+    }
 
     public static void main(String[] args) {
 //        TreeNode root = new TreeNode(10);
