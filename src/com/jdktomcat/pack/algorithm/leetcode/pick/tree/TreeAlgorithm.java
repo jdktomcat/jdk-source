@@ -82,6 +82,23 @@ public class TreeAlgorithm {
         return max;
     }
 
+//    static int MAX_PATH = Integer.MIN_VALUE;
+//
+//    public static int maxPathSumNew(TreeNode root) {
+////        int max = maxDeep(root, true);
+////        if (root.left != null) {
+////            max = Math.max(max, maxPathSum(root.left));
+////        }
+////        if (root.right != null) {
+////            max = Math.max(max, maxPathSum(root.right));
+////        }
+////        return max;
+////        if (root.left != null) {
+////            MAX_PATH = Math.max(MAX_PATH, MAX_PATH + maxPathSumNew(root.left));
+////
+////        }
+//    }
+
     public static void main(String[] args) {
 //        TreeNode root = new TreeNode(10);
 //        TreeNode node2 = new TreeNode(5);
