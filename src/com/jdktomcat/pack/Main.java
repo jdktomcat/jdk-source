@@ -62,13 +62,17 @@ public class Main extends Thread {
 
     public static void main(String[] args) {
 
-        System.out.println("Ready Go," + (System.currentTimeMillis() / 1000));
-        builder().key1("YY").key2("").value("Video").build().start();
-        builder().key1("YY").key2("").value("Audio").build().start();
-        builder().key1("YY").key2("").value("EC").build().start();
-        builder().key1("YY").key2("").value("TheOne").build().start();
-        builder().key1("Duowan").key2("").value("Game").build().start();
-        builder().key1("Huya").key2("").value("Video").build().start();
+//        System.out.println("Ready Go," + (System.currentTimeMillis() / 1000));
+//        builder().key1("YY").key2("").value("Video").build().start();
+//        builder().key1("YY").key2("").value("Audio").build().start();
+//        builder().key1("YY").key2("").value("EC").build().start();
+//        builder().key1("YY").key2("").value("TheOne").build().start();
+//        builder().key1("Duowan").key2("").value("Game").build().start();
+//        builder().key1("Huya").key2("").value("Video").build().start();
+
+        String shopId = "xgc_20210916194320248yoo8|xiniu_xgc_bgc";
+        String[] cps = shopId.split("\\|");
+        System.out.println(cps);
     }
 
     @Override

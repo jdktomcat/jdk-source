@@ -24,7 +24,7 @@ public class StringMulti {
                 sumArray[i - 1] += over;
             }
         }
-        StringBuffer sum = new StringBuffer();
+        StringBuilder sum = new StringBuilder();
         boolean firstZero = true;
         for (int i = 0; i < length1 + length2; i++) {
             if (sumArray[i] != 0 || !firstZero) {
