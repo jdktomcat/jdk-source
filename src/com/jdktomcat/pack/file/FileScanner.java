@@ -22,49 +22,17 @@ public class FileScanner {
     }
 
     public static void main(String[] args) throws IOException {
-//        String myDataFile = "C:\\Users\\Administrator\\Desktop\\data\\hive_imei.csv";
-//        String theirDataFile = "C:\\Users\\Administrator\\Desktop\\data\\imei-vivo-0303.log";
-//        Set<String> myData = getFileSet(myDataFile);
-//        Set<String> theirData = getFileSet(theirDataFile);
-//        Set<String> result = new HashSet<>();
-//        result.clear();
-//        result.addAll(myData);
-//        result.removeAll(theirData);
-//        System.out.println("数据总数差异（条数：" + result.size() + "）：");
-//        result.clear();
-//        result.addAll(myData);
-//        result.retainAll(theirData);
-//        System.out.println("数据交集（条数：" + result.size() + "）：");
-//        for (String imei : result) {
-//            System.out.println(imei);
-//        }
-//        result.clear();
-//        result.addAll(myData);
-//        result.removeAll(theirData);
-//        System.out.println("第三方数据没有（条数：" + result.size() + "）：");
-//        for (String imei : result) {
-//            System.out.println(imei);
-//        }
-//
-//        result.clear();
-//        result.addAll(theirData);
-//        result.removeAll(myData);
-//        System.out.println("第三方多余数据（条数：" + result.size() + "）：");
-//        for (String imei : result) {
-//            System.out.println(imei);
-//        }
-
-//        String filePath = "C:\\Users\\Administrator\\Desktop\\imei\\imei.txt";
-//        Set<String> myData = getFileSet(filePath);
-//        System.out.println("总数：" + myData.size());
-
-
-        String filePath = "C:\\Users\\Administrator\\Desktop\\imei\\imei.txt";
-        File file = new File(filePath);
-        if(!file.exists()){
-            file.createNewFile();
+        String myDataFile = "/Users/tangqi/Desktop/shop.txt";
+        String theirDataFile = "/Users/tangqi/Desktop/xiniu.txt";
+        Set<String> myData = getFileSet(myDataFile);
+        Set<String> theirData = getFileSet(theirDataFile);
+        Set<String> result = new HashSet<>();
+        result.clear();
+        result.addAll(myData);
+        result.removeAll(theirData);
+        System.out.println("数据总数差异（条数：" + result.size() + "）：");
+        for (String imei : result) {
+            System.out.println(imei);
         }
-        InputStream inputStream  = new FileInputStream(file);
-
     }
 }

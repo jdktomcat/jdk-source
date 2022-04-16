@@ -7,6 +7,7 @@ package com.jdktomcat.pack.algorithm.string;
  * @date 2019-10-11 20:44
  */
 public class LongestCommonSubsequence {
+    private volatile int age;
 
     /**
      * 最大共同子序列长度
