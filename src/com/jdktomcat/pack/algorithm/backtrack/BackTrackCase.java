@@ -1,7 +1,5 @@
 package com.jdktomcat.pack.algorithm.backtrack;
 
-import java.util.Arrays;
-
 /**
  * 类概述：回溯算法样例
  *
@@ -19,6 +17,7 @@ public class BackTrackCase {
      * @return 目标值
      */
     private static int helper(int[] nums, int index, int sum) {
+        System.out.println(String.format("index:%s sum:%s", index, sum));
         if (index >= nums.length) {
             return sum % 7 == 0 ? sum : 0;
         }
@@ -41,7 +40,7 @@ public class BackTrackCase {
 
 
     public static void main(String[] args) {
-        int[] nums = new int[]{1,7,11,2};
+        int[] nums = new int[]{1, 6, 11,2};
         System.out.println(findMaxSumAndEvenSeven(nums));
     }
 
