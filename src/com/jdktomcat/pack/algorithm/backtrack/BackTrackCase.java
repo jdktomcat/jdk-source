@@ -17,7 +17,6 @@ public class BackTrackCase {
      * @return 目标值
      */
     private static int helper(int[] nums, int index, int sum) {
-        System.out.println(String.format("index:%s sum:%s", index, sum));
         if (index >= nums.length) {
             return sum % 7 == 0 ? sum : 0;
         }
